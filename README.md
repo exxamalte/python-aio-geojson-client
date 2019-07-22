@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/exxamalte/python-aio-geojson-client.svg)](https://travis-ci.org/exxamalte/python-aio-geojson-client)
 [![Coverage Status](https://coveralls.io/repos/github/exxamalte/python-aio-geojson-client/badge.svg?branch=master)](https://coveralls.io/github/exxamalte/python-aio-geojson-client?branch=master)
-[![PyPi](https://img.shields.io/pypi/v/geojson-aio-client.svg)](https://pypi.python.org/pypi/geojson-aio-client)
-[![Version](https://img.shields.io/pypi/pyversions/geojson-aio-client.svg)](https://pypi.python.org/pypi/geojson-aio-client)
+[![PyPi](https://img.shields.io/pypi/v/aio-geojson-client.svg)](https://pypi.python.org/pypi/aio-geojson-client)
+[![Version](https://img.shields.io/pypi/pyversions/aio-geojson-client.svg)](https://pypi.python.org/pypi/aio-geojson-client)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4f7b12fe27fc845b5712/maintainability)](https://codeclimate.com/github/exxamalte/python-aio-geojson-client/maintainability)
 
 This library provides convenient async access to 
