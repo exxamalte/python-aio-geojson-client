@@ -12,7 +12,6 @@ REQUIRES = [
     'aiohttp',
     'geojson>=2.4.0',
     'haversine>=1.0.1',
-    'pytz>=2018.04',
 ]
 
 
