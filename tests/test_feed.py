@@ -1,6 +1,10 @@
 """Test for the generic geojson feed."""
+from unittest import mock
+from unittest.mock import MagicMock
+
 import aiohttp
 import pytest
+from aiohttp import ClientOSError
 
 from aio_geojson_client.consts import UPDATE_OK, UPDATE_ERROR
 from tests import MockGeoJsonFeed
@@ -81,6 +85,21 @@ async def test_update_ok_with_filtering(aresponses, event_loop):
         assert round(abs(entries[0].distance_to_home - 82.0), 1) == 0
         assert round(abs(entries[1].distance_to_home - 77.0), 1) == 0
         assert round(abs(entries[2].distance_to_home - 84.6), 1) == 0
+
+
+@pytest.mark.asyncio
+async def test_update_with_client_exception(event_loop):
+    """Test updating feed results in error."""
+    home_coordinates = (-31.0, 151.0)
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        mock_websession = MagicMock()
+        mock_websession.request.side_effect = ClientOSError
+        feed = MockGeoJsonFeed(mock_websession, home_coordinates,
+                               "http://test.url/badpath")
+        status, entries = await feed.update()
+        assert status == UPDATE_ERROR
+        assert feed.last_timestamp is None
 
 
 @pytest.mark.asyncio

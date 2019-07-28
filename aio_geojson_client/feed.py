@@ -63,22 +63,27 @@ class GeoJsonFeed:
 
     async def _fetch(self, method: str = "GET", headers=None, params=None):
         """Fetch GeoJSON data from external source."""
-        async with self._websession.request(
-                method, self._url, headers=headers, params=params
-        ) as response:
-            try:
-                response.raise_for_status()
-                text = await response.text()
-                feature_collection = geojson.loads(text)
-                return UPDATE_OK, feature_collection
-            except client_exceptions.ClientError as client_error:
-                _LOGGER.warning("Fetching data from %s failed with %s",
-                                self._url, client_error)
-                return UPDATE_ERROR, None
-            except JSONDecodeError as decode_ex:
-                _LOGGER.warning("Unable to parse JSON from %s: %s",
-                                self._url, decode_ex)
-                return UPDATE_ERROR, None
+        try:
+            async with self._websession.request(
+                    method, self._url, headers=headers, params=params
+            ) as response:
+                try:
+                    response.raise_for_status()
+                    text = await response.text()
+                    feature_collection = geojson.loads(text)
+                    return UPDATE_OK, feature_collection
+                except client_exceptions.ClientError as client_error:
+                    _LOGGER.warning("Fetching data from %s failed with %s",
+                                    self._url, client_error)
+                    return UPDATE_ERROR, None
+                except JSONDecodeError as decode_ex:
+                    _LOGGER.warning("Unable to parse JSON from %s: %s",
+                                    self._url, decode_ex)
+                    return UPDATE_ERROR, None
+        except client_exceptions.ClientError as client_error:
+            _LOGGER.warning("Requesting data from %s failed with %s",
+                            self._url, client_error)
+            return UPDATE_ERROR, None
 
     def _filter_entries(self, entries):
         """Filter the provided entries."""
