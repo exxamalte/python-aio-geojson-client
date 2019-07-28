@@ -1,5 +1,8 @@
 # Changes
 
+## 0.3 (29/07/2019)
+* Improved handling errors while establishing client connection.
+
 ## 0.2 (26/07/2019)
 * Changed feed manager callbacks to async.
 * Removed unused dependency `pytz`.
