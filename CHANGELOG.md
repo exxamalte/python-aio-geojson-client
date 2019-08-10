@@ -1,5 +1,9 @@
 # Changes
 
+## 0.4 (10/08/2019)
+* Added time of last successful update from feed and last update in general.
+* Added status callback to let subscriber know about feed update details.
+
 ## 0.3 (29/07/2019)
 * Improved handling errors while establishing client connection.
 
