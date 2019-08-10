@@ -30,12 +30,12 @@ of a status code and the actual data in the form of a list of feed entries
 specific to the selected feed.
 
 Status Codes
-* _UPDATE_OK_: Update went fine and data was retrieved. The library may still 
+* _OK_: Update went fine and data was retrieved. The library may still 
   return empty data, for example because no entries fulfilled the filter 
   criteria.
-* _UPDATE_OK_NO_DATA_: Update went fine but no data was retrieved, for example 
+* _OK_NO_DATA_: Update went fine but no data was retrieved, for example 
   because the server indicated that there was not update since the last request.
-* _UPDATE_ERROR_: Something went wrong during the update
+* _ERROR_: Something went wrong during the update
 
 ## Feed Manager
 
