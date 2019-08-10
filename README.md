@@ -16,7 +16,7 @@ This library provides convenient async access to
 
 | Library  | Source  | Topic  |
 |----------|---------|--------|
-| TBA      |         |        |
+| [aio_geojson_geonetnz_quakes](https://github.com/exxamalte/python-aio-geojson-geonetnz-quakes) | GeoNet New Zealand Quakes | Earthquakes |
 
 
 ## Usage
@@ -60,9 +60,11 @@ compared to the last feed update.
 After a successful update from the feed, the feed manager provides two
 different dates:
 
-* `last_update` will be the timestamp of the last successful update from the
-  feed. This date may be useful if the consumer of this library wants to
-  treat intermittent errors from feed updates differently.
+* `last_update` will be the timestamp of the last update from the feed 
+  irrespective of whether it was successful or not.
+* `last_update_successful` will be the timestamp of the last successful update 
+  from the feed. This date may be useful if the consumer of this library wants 
+  to treat intermittent errors from feed updates differently.
 * `last_timestamp` (optional, depends on the feed data) will be the latest 
   timestamp extracted from the feed data. 
   This requires that the underlying feed data actually contains a suitable 
