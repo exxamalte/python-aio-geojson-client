@@ -108,6 +108,7 @@ class FeedManagerBase:
             await self._status_async_callback(
                 StatusUpdate(status, self.last_update,
                              self.last_update_successful, self.last_timestamp,
+                             len(self.feed_entries),
                              count_created, count_updated, count_removed))
 
     @property

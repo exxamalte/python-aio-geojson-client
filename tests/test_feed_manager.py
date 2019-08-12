@@ -195,6 +195,7 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         last_update_successful = status_update[0].last_update_successful
         assert status_update[0].last_update == last_update_successful
         assert status_update[0].last_timestamp is None
+        assert status_update[0].total == 5
         assert status_update[0].created == 5
         assert status_update[0].updated == 0
         assert status_update[0].removed == 0
@@ -227,3 +228,4 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         assert status_update[0].last_update_successful is not None
         assert status_update[0].last_update_successful == \
             last_update_successful
+        assert status_update[0].total == 0
