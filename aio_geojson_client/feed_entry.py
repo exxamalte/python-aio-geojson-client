@@ -1,12 +1,13 @@
 """
 Feed Entry.
 """
+from abc import abstractmethod, ABC
 from typing import Optional
 
 from .geojson_distance_helper import GeoJsonDistanceHelper
 
 
-class FeedEntry:
+class FeedEntry(ABC):
     """Feed entry base class."""
 
     def __init__(self, home_coordinates, feature):
@@ -33,11 +34,13 @@ class FeedEntry:
         return None
 
     @property
+    @abstractmethod
     def title(self) -> Optional[str]:
         """Return the title of this entry."""
         return None
 
     @property
+    @abstractmethod
     def external_id(self) -> Optional[str]:
         """Return the external id of this entry."""
         return None
@@ -48,7 +51,7 @@ class FeedEntry:
         return None
 
     @property
-    def distance_to_home(self):
+    def distance_to_home(self) -> Optional[float]:
         """Return the distance in km of this entry to the home coordinates."""
         return GeoJsonDistanceHelper.distance_to_geometry(
             self._home_coordinates, self.geometry)

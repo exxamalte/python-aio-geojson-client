@@ -1,4 +1,7 @@
 """Tests for aio-geojson-client library."""
+from datetime import datetime
+from typing import Optional
+
 from aio_geojson_client.feed import GeoJsonFeed
 from aio_geojson_client.feed_entry import FeedEntry
 
@@ -9,9 +12,26 @@ ATTR_TITLE = 'title'
 
 class MockGeoJsonFeed(GeoJsonFeed):
 
+    def _extract_from_feed(self, feed) -> Optional:
+        return None
+
+    def _extract_last_timestamp(self, feed_entries) -> Optional[datetime]:
+        return None
+
     def _new_entry(self, home_coordinates, feature, global_data):
         """Generate a new entry."""
         return MockFeedEntry(home_coordinates, feature)
+
+
+class MockSimpleFeedEntry(FeedEntry):
+
+    @property
+    def title(self) -> Optional[str]:
+        return "mock title"
+
+    @property
+    def external_id(self) -> Optional[str]:
+        return "mock id"
 
 
 class MockFeedEntry(FeedEntry):

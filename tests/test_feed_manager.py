@@ -2,6 +2,9 @@
 import aiohttp
 import pytest
 
+from asynctest import patch, CoroutineMock
+
+from aio_geojson_client.consts import UPDATE_OK_NO_DATA
 from aio_geojson_client.feed_manager import FeedManagerBase
 from tests import MockGeoJsonFeed
 from tests.utils import load_fixture
@@ -113,6 +116,23 @@ async def test_feed_manager(aresponses, event_loop):
         assert feed_entry.title == "Title 6"
 
         # Simulate an update with no data.
+        generated_entity_external_ids.clear()
+        updated_entity_external_ids.clear()
+        removed_entity_external_ids.clear()
+
+        with patch("aio_geojson_client.feed.GeoJsonFeed._fetch",
+                   new_callable=CoroutineMock) as mock_fetch:
+            mock_fetch.return_value = (UPDATE_OK_NO_DATA, None)
+
+            await feed_manager.update()
+            entries = feed_manager.feed_entries
+
+            assert len(entries) == 3
+            assert len(generated_entity_external_ids) == 0
+            assert len(updated_entity_external_ids) == 0
+            assert len(removed_entity_external_ids) == 0
+
+        # Simulate an update producing an error.
         generated_entity_external_ids.clear()
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
