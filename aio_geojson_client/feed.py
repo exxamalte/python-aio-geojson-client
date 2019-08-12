@@ -2,6 +2,7 @@
 GeoJSON Feed.
 """
 import logging
+from abc import abstractmethod, ABC
 from datetime import datetime
 from json import JSONDecodeError
 from typing import Optional
@@ -14,7 +15,7 @@ from .consts import UPDATE_OK, UPDATE_OK_NO_DATA, UPDATE_ERROR
 _LOGGER = logging.getLogger(__name__)
 
 
-class GeoJsonFeed:
+class GeoJsonFeed(ABC):
     """Geo JSON feed base class."""
 
     def __init__(self, websession: ClientSession,
@@ -32,6 +33,7 @@ class GeoJsonFeed:
             self.__class__.__name__, self._home_coordinates, self._url,
             self._filter_radius)
 
+    @abstractmethod
     def _new_entry(self, home_coordinates, feature, global_data):
         """Generate a new entry."""
         pass
@@ -101,11 +103,13 @@ class GeoJsonFeed:
                        filtered_entries))
         return filtered_entries
 
-    def _extract_from_feed(self, feed):
+    @abstractmethod
+    def _extract_from_feed(self, feed) -> Optional:
         """Extract global metadata from feed."""
         return None
 
-    def _extract_last_timestamp(self, feed_entries):
+    @abstractmethod
+    def _extract_last_timestamp(self, feed_entries) -> Optional[datetime]:
         """Determine latest (newest) entry from the filtered feed."""
         return None
 
