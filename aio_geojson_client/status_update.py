@@ -7,12 +7,13 @@ class StatusUpdate:
     """Status Update class."""
 
     def __init__(self, status, last_update, last_update_successful,
-                 last_timestamp, created, updated, removed):
+                 last_timestamp, total, created, updated, removed):
         """Initialise this status update."""
         self._status = status
         self._last_update = last_update
         self._last_update_successful = last_update_successful
         self._last_timestamp = last_timestamp
+        self._total = total
         self._created = created
         self._updated = updated
         self._removed = removed
@@ -42,6 +43,11 @@ class StatusUpdate:
     def last_timestamp(self):
         """Return the timestamp the latest entry in the feed."""
         return self._last_timestamp
+
+    @property
+    def total(self):
+        """Return the total number of managed entries."""
+        return self._total
 
     @property
     def created(self):
