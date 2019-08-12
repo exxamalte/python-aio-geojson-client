@@ -1,5 +1,8 @@
 # Changes
 
+## 0.5 (12/08/2019)
+* Added total number of managed entries to status callback info.
+
 ## 0.4 (10/08/2019)
 * Added time of last successful update from feed and last update in general.
 * Added status callback to let subscriber know about feed update details.
