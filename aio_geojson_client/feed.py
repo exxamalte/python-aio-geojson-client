@@ -59,6 +59,7 @@ class GeoJsonFeed:
             return UPDATE_OK_NO_DATA, None
         else:
             # Error happened while fetching the feed.
+            self._last_timestamp = None
             return UPDATE_ERROR, None
 
     async def _fetch(self, method: str = "GET", headers=None, params=None):
