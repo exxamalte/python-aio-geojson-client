@@ -7,10 +7,12 @@ from datetime import datetime
 from json import JSONDecodeError
 from typing import Optional
 
+import aiohttp
 import geojson
 from aiohttp import ClientSession, client_exceptions
 
-from .consts import UPDATE_OK, UPDATE_OK_NO_DATA, UPDATE_ERROR
+from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_OK, UPDATE_OK_NO_DATA, \
+    UPDATE_ERROR
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -67,8 +69,10 @@ class GeoJsonFeed(ABC):
     async def _fetch(self, method: str = "GET", headers=None, params=None):
         """Fetch GeoJSON data from external source."""
         try:
+            timeout = aiohttp.ClientTimeout(total=DEFAULT_REQUEST_TIMEOUT)
             async with self._websession.request(
-                    method, self._url, headers=headers, params=params
+                    method, self._url, headers=headers, params=params,
+                    timeout=timeout
             ) as response:
                 try:
                     response.raise_for_status()
