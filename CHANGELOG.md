@@ -1,5 +1,10 @@
 # Changes
 
+## 0.6 (13/08/2019)
+* Reset last timestamp when update fails.
+* Improves code and test coverage.
+* Add request timeout of 10 seconds.
+
 ## 0.5 (12/08/2019)
 * Added total number of managed entries to status callback info.
 
