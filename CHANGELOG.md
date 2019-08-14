@@ -1,5 +1,8 @@
 # Changes
 
+## 0.7 (14/08/2019)
+* Add ability to override client session timeout in sub-classes of feed.
+
 ## 0.6 (13/08/2019)
 * Reset last timestamp when update fails.
 * Improves code and test coverage.
