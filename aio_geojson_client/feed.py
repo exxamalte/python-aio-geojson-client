@@ -40,6 +40,10 @@ class GeoJsonFeed(ABC):
         """Generate a new entry."""
         pass
 
+    def _client_session_timeout(self) -> int:
+        """Define client session timeout in seconds. Override if necessary."""
+        return DEFAULT_REQUEST_TIMEOUT
+
     async def update(self):
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
@@ -69,7 +73,8 @@ class GeoJsonFeed(ABC):
     async def _fetch(self, method: str = "GET", headers=None, params=None):
         """Fetch GeoJSON data from external source."""
         try:
-            timeout = aiohttp.ClientTimeout(total=DEFAULT_REQUEST_TIMEOUT)
+            timeout = aiohttp.ClientTimeout(
+                total=self._client_session_timeout())
             async with self._websession.request(
                     method, self._url, headers=headers, params=params,
                     timeout=timeout
