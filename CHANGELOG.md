@@ -1,5 +1,8 @@
 # Changes
 
+## 0.8 (18/09/2019)
+* Makes feed manager base class more modular for overriding classes.
+
 ## 0.7 (14/08/2019)
 * Add ability to override client session timeout in sub-classes of feed.
 
