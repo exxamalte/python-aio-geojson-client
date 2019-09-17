@@ -42,27 +42,19 @@ class FeedManagerBase:
         count_created = 0
         count_updated = 0
         count_removed = 0
+        await self._store_feed_entries(status, feed_entries)
         if status == UPDATE_OK:
             _LOGGER.debug("Data retrieved %s", feed_entries)
             # Record current time of update.
             self._last_update_successful = self._last_update
-            # Keep a copy of all feed entries for future lookups by entities.
-            self.feed_entries = {entry.external_id: entry
-                                 for entry in feed_entries}
             # For entity management the external ids from the feed are used.
             feed_external_ids = set(self.feed_entries)
-            remove_external_ids = self._managed_external_ids.difference(
+            count_removed = await self._update_feed_remove_entries(
                 feed_external_ids)
-            count_removed = len(remove_external_ids)
-            await self._remove_entities(remove_external_ids)
-            update_external_ids = self._managed_external_ids.intersection(
+            count_updated = await self._update_feed_update_entries(
                 feed_external_ids)
-            count_updated = len(update_external_ids)
-            await self._update_entities(update_external_ids)
-            create_external_ids = feed_external_ids.difference(
-                self._managed_external_ids)
-            count_created = len(create_external_ids)
-            await self._generate_new_entities(create_external_ids)
+            count_created = await self._update_feed_create_entries(
+                feed_external_ids)
         elif status == UPDATE_OK_NO_DATA:
             _LOGGER.debug(
                 "Update successful, but no data received from %s", self._feed)
@@ -72,30 +64,59 @@ class FeedManagerBase:
             _LOGGER.warning(
                 "Update not successful, no data received from %s", self._feed)
             # Remove all entities.
-            count_removed = len(self._managed_external_ids)
-            await self._remove_entities(self._managed_external_ids.copy())
-            # Remove all feed entries and managed external ids.
-            self.feed_entries.clear()
-            self._managed_external_ids.clear()
+            count_removed = await self._update_feed_remove_entries(set())
         # Send status update to subscriber.
         await self._status_update(status, count_created, count_updated,
                                   count_removed)
 
+    async def _store_feed_entries(self, status, feed_entries):
+        # Keep a copy of all feed entries for future lookups.
+        if feed_entries or status == UPDATE_OK_NO_DATA:
+            if status == UPDATE_OK:
+                self.feed_entries = {entry.external_id: entry
+                                     for entry in feed_entries}
+        else:
+            self.feed_entries.clear()
+
+    async def _update_feed_create_entries(self, feed_external_ids):
+        """Create entities after feed update."""
+        create_external_ids = feed_external_ids.difference(
+            self._managed_external_ids)
+        count_created = len(create_external_ids)
+        await self._generate_new_entities(create_external_ids)
+        return count_created
+
+    async def _update_feed_update_entries(self, feed_external_ids):
+        """Update entities after feed update."""
+        update_external_ids = self._managed_external_ids.intersection(
+            feed_external_ids)
+        count_updated = len(update_external_ids)
+        await self._update_entities(update_external_ids)
+        return count_updated
+
+    async def _update_feed_remove_entries(self, feed_external_ids):
+        """Remove entities after feed update."""
+        remove_external_ids = self._managed_external_ids.difference(
+            feed_external_ids)
+        count_removed = len(remove_external_ids)
+        await self._remove_entities(remove_external_ids)
+        return count_removed
+
     async def _generate_new_entities(self, external_ids):
-        """Generate new entities for events."""
+        """Generate new entities for events using callback."""
         for external_id in external_ids:
             await self._generate_async_callback(external_id)
             _LOGGER.debug("New entity added %s", external_id)
             self._managed_external_ids.add(external_id)
 
     async def _update_entities(self, external_ids):
-        """Update entities."""
+        """Update entities using callback."""
         for external_id in external_ids:
             _LOGGER.debug("Existing entity found %s", external_id)
             await self._update_async_callback(external_id)
 
     async def _remove_entities(self, external_ids):
-        """Remove entities."""
+        """Remove entities using callback."""
         for external_id in external_ids:
             _LOGGER.debug("Entity not current anymore %s", external_id)
             self._managed_external_ids.remove(external_id)
