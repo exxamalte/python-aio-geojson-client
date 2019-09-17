@@ -70,7 +70,7 @@ class FeedManagerBase:
                                   count_removed)
 
     async def _store_feed_entries(self, status, feed_entries):
-        # Keep a copy of all feed entries for future lookups.
+        """Keep a copy of all feed entries for future lookups."""
         if feed_entries or status == UPDATE_OK_NO_DATA:
             if status == UPDATE_OK:
                 self.feed_entries = {entry.external_id: entry
