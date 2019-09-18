@@ -1,5 +1,8 @@
 # Changes
 
+## 0.9 (19/09/2019)
+* Fix feed manager external ID handling.
+
 ## 0.8 (18/09/2019)
 * Makes feed manager base class more modular for overriding classes.
 
