@@ -1,6 +1,7 @@
 """
 GeoJSON Feed.
 """
+import asyncio
 import logging
 from abc import abstractmethod, ABC
 from datetime import datetime
@@ -95,6 +96,10 @@ class GeoJsonFeed(ABC):
         except client_exceptions.ClientError as client_error:
             _LOGGER.warning("Requesting data from %s failed with %s",
                             self._url, client_error)
+            return UPDATE_ERROR, None
+        except asyncio.TimeoutError as timeout_error:
+            _LOGGER.warning("Requesting data from %s failed with %s",
+                            self._url, timeout_error)
             return UPDATE_ERROR, None
 
     def _filter_entries(self, entries):
