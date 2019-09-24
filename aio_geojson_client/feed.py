@@ -95,13 +95,12 @@ class GeoJsonFeed(ABC):
                     return UPDATE_ERROR, None
         except client_exceptions.ClientError as client_error:
             _LOGGER.warning("Requesting data from %s failed with "
-                            "client error %s",
+                            "client error: %s",
                             self._url, client_error)
             return UPDATE_ERROR, None
-        except asyncio.TimeoutError as timeout_error:
+        except asyncio.TimeoutError:
             _LOGGER.warning("Requesting data from %s failed with "
-                            "timeout error %s",
-                            self._url, timeout_error)
+                            "timeout error", self._url)
             return UPDATE_ERROR, None
 
     def _filter_entries(self, entries):
