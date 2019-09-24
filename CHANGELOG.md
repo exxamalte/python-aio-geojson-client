@@ -1,5 +1,9 @@
 # Changes
 
+## 0.10 (24/09/2019)
+* Handle timeout error when fetching data from feed.
+* Improve log message when error occurs while fetching data.
+
 ## 0.9 (19/09/2019)
 * Fix feed manager external ID handling.
 
