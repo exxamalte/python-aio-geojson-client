@@ -1,6 +1,5 @@
 """Test for the generic geojson feed."""
 import asyncio
-from unittest import mock
 from unittest.mock import MagicMock
 
 import aiohttp
@@ -56,7 +55,7 @@ async def test_update_ok(aresponses, event_loop):
         feed_entry = entries[3]
         assert feed_entry is not None
         assert feed_entry.title is None
-        assert feed_entry.external_id == -7266545992534134585
+        assert feed_entry.external_id == hash(feed_entry.coordinates)
 
         feed_entry = entries[4]
         assert feed_entry is not None
