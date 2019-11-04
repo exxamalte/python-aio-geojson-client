@@ -17,6 +17,7 @@ This library provides convenient async access to
 | Library  | Source  | Topic  |
 |----------|---------|--------|
 | [aio_geojson_geonetnz_quakes](https://github.com/exxamalte/python-aio-geojson-geonetnz-quakes) | GeoNet New Zealand Quakes | Earthquakes |
+| [aio_geojson_geonetnz_volcanon](https://github.com/exxamalte/python-aio-geojson-geonetnz-volcano) | GeoNet New Zealand Volcano | Volcanoes |
 
 
 ## Usage
