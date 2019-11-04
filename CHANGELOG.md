@@ -1,5 +1,8 @@
 # Changes
 
+## 0.11 (05/11/2019)
+* Python 3.8 compatibility.
+
 ## 0.10 (24/09/2019)
 * Handle timeout error when fetching data from feed.
 * Improve log message when error occurs while fetching data.
