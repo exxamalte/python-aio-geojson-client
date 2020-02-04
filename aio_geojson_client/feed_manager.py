@@ -3,14 +3,14 @@ Base class for the feed manager.
 
 This allows managing feeds and their entries throughout their life-cycle.
 """
-from datetime import datetime
 import logging
-from typing import Optional, Callable, Awaitable, List, Set
+from datetime import datetime
+from typing import Awaitable, Callable, List, Optional, Set
 
+from .consts import UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed import GeoJsonFeed
 from .feed_entry import FeedEntry
 from .status_update import StatusUpdate
-from .consts import UPDATE_OK, UPDATE_OK_NO_DATA
 
 _LOGGER = logging.getLogger(__name__)
 

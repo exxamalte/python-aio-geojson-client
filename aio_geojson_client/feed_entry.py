@@ -1,5 +1,5 @@
 """Feed Entry."""
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
 from geojson import Feature

@@ -2,7 +2,7 @@
 import logging
 from typing import Optional, Tuple
 
-from geojson import Point, GeometryCollection, Polygon
+from geojson import GeometryCollection, Point, Polygon
 from geojson.geometry import Geometry
 from haversine import haversine
 

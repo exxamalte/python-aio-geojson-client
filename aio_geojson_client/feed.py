@@ -1,18 +1,18 @@
 """GeoJSON Feed."""
 import asyncio
 import logging
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Optional, Tuple, TypeVar, Generic, Dict, List
+from typing import Dict, Generic, List, Optional, Tuple, TypeVar
 
 import aiohttp
 import geojson
 from aiohttp import ClientSession, client_exceptions
 from geojson import FeatureCollection
 
-from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_OK, UPDATE_OK_NO_DATA, \
-    UPDATE_ERROR
+from .consts import (DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR, UPDATE_OK,
+                     UPDATE_OK_NO_DATA)
 from .feed_entry import FeedEntry
 
 _LOGGER = logging.getLogger(__name__)
