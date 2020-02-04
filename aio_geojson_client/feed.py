@@ -1,6 +1,4 @@
-"""
-GeoJSON Feed.
-"""
+"""GeoJSON Feed."""
 import asyncio
 import logging
 from abc import abstractmethod, ABC

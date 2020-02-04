@@ -1,6 +1,4 @@
-"""
-Feed Entry.
-"""
+"""Feed Entry."""
 from abc import abstractmethod, ABC
 from typing import Optional, Tuple
 

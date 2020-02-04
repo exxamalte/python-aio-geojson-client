@@ -1,6 +1,4 @@
-"""
-GeoJSON distance helper.
-"""
+"""GeoJSON distance helper."""
 import logging
 from typing import Optional, Tuple
 
