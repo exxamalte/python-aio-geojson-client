@@ -1,6 +1,4 @@
-"""
-Constants.
-"""
+"""Constants."""
 DEFAULT_REQUEST_TIMEOUT = 10
 
 UPDATE_OK = 'OK'

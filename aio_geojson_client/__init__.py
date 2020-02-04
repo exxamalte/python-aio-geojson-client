@@ -1,3 +1,1 @@
-"""
-aio_geojson_client library.
-"""
+"""aio_geojson_client library."""
