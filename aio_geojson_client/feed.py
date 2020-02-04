@@ -23,7 +23,8 @@ T_FEED_ENTRY = TypeVar("T_FEED_ENTRY", bound=FeedEntry)
 class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
     """Geo JSON feed base class."""
 
-    def __init__(self, websession: ClientSession,
+    def __init__(self,
+                 websession: ClientSession,
                  home_coordinates: Tuple[float, float],
                  url: str,
                  filter_radius: float = None):
