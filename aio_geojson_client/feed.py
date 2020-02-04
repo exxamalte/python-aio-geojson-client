@@ -6,23 +6,29 @@ import logging
 from abc import abstractmethod, ABC
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Optional
+from typing import Optional, Tuple, TypeVar, Generic, Dict, List
 
 import aiohttp
 import geojson
 from aiohttp import ClientSession, client_exceptions
+from geojson import FeatureCollection
 
 from .consts import DEFAULT_REQUEST_TIMEOUT, UPDATE_OK, UPDATE_OK_NO_DATA, \
     UPDATE_ERROR
+from .feed_entry import FeedEntry
 
 _LOGGER = logging.getLogger(__name__)
 
+T_FEED_ENTRY = TypeVar("T_FEED_ENTRY", bound=FeedEntry)
 
-class GeoJsonFeed(ABC):
+
+class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
     """Geo JSON feed base class."""
 
     def __init__(self, websession: ClientSession,
-                 home_coordinates, url: str, filter_radius: float = None):
+                 home_coordinates: Tuple[float, float],
+                 url: str,
+                 filter_radius: float = None):
         """Initialise this service."""
         self._websession = websession
         self._home_coordinates = home_coordinates
@@ -37,7 +43,10 @@ class GeoJsonFeed(ABC):
             self._filter_radius)
 
     @abstractmethod
-    def _new_entry(self, home_coordinates, feature, global_data):
+    def _new_entry(self,
+                   home_coordinates: Tuple[float, float],
+                   feature,
+                   global_data: Dict) -> T_FEED_ENTRY:
         """Generate a new entry."""
         pass
 
@@ -45,7 +54,7 @@ class GeoJsonFeed(ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    async def update(self):
+    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
         if status == UPDATE_OK:
@@ -71,7 +80,10 @@ class GeoJsonFeed(ABC):
             self._last_timestamp = None
             return UPDATE_ERROR, None
 
-    async def _fetch(self, method: str = "GET", headers=None, params=None):
+    async def _fetch(self,
+                     method: str = "GET",
+                     headers=None,
+                     params=None) -> Tuple[str, Optional[FeatureCollection]]:
         """Fetch GeoJSON data from external source."""
         try:
             timeout = aiohttp.ClientTimeout(
@@ -103,7 +115,8 @@ class GeoJsonFeed(ABC):
                             "timeout error", self._url)
             return UPDATE_ERROR, None
 
-    def _filter_entries(self, entries):
+    def _filter_entries(self,
+                        entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         # Always remove entries without geometry
@@ -120,12 +133,13 @@ class GeoJsonFeed(ABC):
         return filtered_entries
 
     @abstractmethod
-    def _extract_from_feed(self, feed) -> Optional:
+    def _extract_from_feed(self, feed: FeatureCollection) -> Optional[Dict]:
         """Extract global metadata from feed."""
         return None
 
     @abstractmethod
-    def _extract_last_timestamp(self, feed_entries) -> Optional[datetime]:
+    def _extract_last_timestamp(
+            self, feed_entries: List[T_FEED_ENTRY]) -> Optional[datetime]:
         """Determine latest (newest) entry from the filtered feed."""
         return None
 

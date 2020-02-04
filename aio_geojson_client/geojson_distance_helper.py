@@ -2,8 +2,10 @@
 GeoJSON distance helper.
 """
 import logging
+from typing import Optional, Tuple
 
 from geojson import Point, GeometryCollection, Polygon
+from geojson.geometry import Geometry
 from haversine import haversine
 
 _LOGGER = logging.getLogger(__name__)
@@ -17,7 +19,8 @@ class GeoJsonDistanceHelper:
         pass
 
     @staticmethod
-    def extract_coordinates(geometry):
+    def extract_coordinates(geometry: Geometry) \
+            -> Optional[Tuple[float, float]]:
         """Extract the best coordinates from the feature for display."""
         latitude = longitude = None
         if isinstance(geometry, Point):
@@ -46,7 +49,8 @@ class GeoJsonDistanceHelper:
         return latitude, longitude
 
     @staticmethod
-    def distance_to_geometry(home_coordinates, geometry):
+    def distance_to_geometry(home_coordinates: Tuple[float, float],
+                             geometry: Geometry) -> float:
         """Calculate the distance between home coordinates and geometry."""
         distance = float("inf")
         if isinstance(geometry, Point):
@@ -63,15 +67,17 @@ class GeoJsonDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_point(home_coordinates, point):
+    def _distance_to_point(home_coordinates: Tuple[float, float],
+                           point: Point) -> float:
         """Calculate the distance between home coordinates and the point."""
         # Swap coordinates to match: (latitude, longitude).
         return GeoJsonDistanceHelper._distance_to_coordinates(
             home_coordinates, (point.coordinates[1], point.coordinates[0]))
 
     @staticmethod
-    def _distance_to_geometry_collection(home_coordinates,
-                                         geometry_collection):
+    def _distance_to_geometry_collection(
+            home_coordinates: Tuple[float, float],
+            geometry_collection: GeometryCollection) -> float:
         """Calculate the distance between home coordinates and the geometry
         collection."""
         distance = float("inf")
@@ -82,7 +88,8 @@ class GeoJsonDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_polygon(home_coordinates, polygon):
+    def _distance_to_polygon(home_coordinates: Tuple[float, float],
+                             polygon: Polygon) -> float:
         """Calculate the distance between home coordinates and the polygon."""
         distance = float("inf")
         # Calculate distance from polygon by calculating the distance
@@ -96,7 +103,9 @@ class GeoJsonDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_coordinates(home_coordinates, coordinates):
+    def _distance_to_coordinates(
+            home_coordinates: Tuple[float, float],
+            coordinates: Tuple[float, float]) -> float:
         """Calculate the distance between home coordinates and the
         coordinates."""
         # Expecting coordinates in format: (latitude, longitude).

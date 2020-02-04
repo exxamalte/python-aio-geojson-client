@@ -2,7 +2,9 @@
 Feed Entry.
 """
 from abc import abstractmethod, ABC
-from typing import Optional
+from typing import Optional, Tuple
+
+from geojson import Feature
 
 from .geojson_distance_helper import GeoJsonDistanceHelper
 
@@ -10,7 +12,9 @@ from .geojson_distance_helper import GeoJsonDistanceHelper
 class FeedEntry(ABC):
     """Feed entry base class."""
 
-    def __init__(self, home_coordinates, feature):
+    def __init__(self,
+                 home_coordinates: Tuple[float, float],
+                 feature: Feature):
         """Initialise this feed entry."""
         self._home_coordinates = home_coordinates
         self._feature = feature
@@ -27,7 +31,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def coordinates(self):
+    def coordinates(self) -> Optional[Tuple[float, float]]:
         """Return the best coordinates (latitude, longitude) of this entry."""
         if self.geometry:
             return GeoJsonDistanceHelper.extract_coordinates(self.geometry)
@@ -51,7 +55,7 @@ class FeedEntry(ABC):
         return None
 
     @property
-    def distance_to_home(self) -> Optional[float]:
+    def distance_to_home(self) -> float:
         """Return the distance in km of this entry to the home coordinates."""
         return GeoJsonDistanceHelper.distance_to_geometry(
             self._home_coordinates, self.geometry)
