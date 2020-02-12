@@ -2,7 +2,7 @@
 import logging
 from typing import List, Optional
 
-from aio_geojson_client.geometries.geometry import Geometry
+from .geometry import Geometry
 
 _LOGGER = logging.getLogger(__name__)
 

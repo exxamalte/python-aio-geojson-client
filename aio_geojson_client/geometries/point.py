@@ -1,7 +1,7 @@
 """GeoJSON point."""
 from typing import Optional
 
-from aio_geojson_client.geometries.geometry import Geometry
+from .geometry import Geometry
 
 
 class Point(Geometry):

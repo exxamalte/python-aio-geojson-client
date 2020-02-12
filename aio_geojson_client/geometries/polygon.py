@@ -1,8 +1,8 @@
 """GeoJSON polygon."""
 from typing import List, Tuple, Optional
 
-from aio_geojson_client.geometries.geometry import Geometry
-from aio_geojson_client.geometries.point import Point
+from .geometry import Geometry
+from .point import Point
 
 
 class Polygon(Geometry):

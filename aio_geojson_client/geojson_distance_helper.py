@@ -4,11 +4,7 @@ from typing import Optional, Tuple
 
 from haversine import haversine
 
-from aio_geojson_client.geometries.geometry import Geometry
-from aio_geojson_client.geometries.geometry_collection import \
-    GeometryCollection
-from aio_geojson_client.geometries.point import Point
-from aio_geojson_client.geometries.polygon import Polygon
+from .geometries import Geometry, GeometryCollection, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 

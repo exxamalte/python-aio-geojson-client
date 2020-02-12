@@ -1,8 +1,7 @@
 """Test geometries."""
 import unittest
 
-from aio_geojson_client.geometries.point import Point
-from aio_geojson_client.geometries.polygon import Polygon
+from aio_geojson_client.geometries import Point, Polygon
 
 
 class TestGeometries(unittest.TestCase):
