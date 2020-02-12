@@ -1,7 +1,7 @@
 """Tests for base classes."""
 import unittest
 from geojson import GeometryCollection
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, ANY
 
 from aio_geojson_client.geojson_distance_helper import GeoJsonDistanceHelper
 from aio_geojson_client.geometries.geometry_collection import \
@@ -165,3 +165,9 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
         distance = GeoJsonDistanceHelper.\
             distance_to_geometry(home_coordinates, mock_unsupported_geometry)
         assert distance == float("inf")
+
+    def test_perpendicular_point_edge_case(self):
+        """Test edge case when calculating perpendicular point."""
+        edge = (Point(-31.0, 150.0), Point(-31.0, 150.0))
+        result = GeoJsonDistanceHelper._perpendicular_point(edge, ANY)
+        assert result is None
