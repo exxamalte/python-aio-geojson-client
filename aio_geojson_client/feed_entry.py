@@ -1,10 +1,15 @@
 """Feed Entry."""
+import logging
 from abc import ABC, abstractmethod
 from typing import Optional, Tuple
 
+import geojson
 from geojson import Feature
 
 from .geojson_distance_helper import GeoJsonDistanceHelper
+from .geometries import Geometry, GeometryCollection, Point, Polygon
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class FeedEntry(ABC):
@@ -22,11 +27,30 @@ class FeedEntry(ABC):
         return '<{}(id={})>'.format(self.__class__.__name__, self.external_id)
 
     @property
-    def geometry(self):
+    def geometry(self) -> Optional[Geometry]:
         """Return all geometry details of this entry."""
         if self._feature:
-            return self._feature.geometry
+            return FeedEntry._wrap(self._feature.geometry)
         return None
+
+    @staticmethod
+    def _wrap(geometry: geojson.geometry.Geometry) -> Optional[Geometry]:
+        """Wrap data of the provided GeoJSON geometry."""
+        if isinstance(geometry, geojson.geometry.Point):
+            return Point(geometry.coordinates[1], geometry.coordinates[0])
+        elif isinstance(geometry, geojson.geometry.GeometryCollection):
+            result = []
+            for entry in geometry.geometries:
+                wrapped_geometry = FeedEntry._wrap(entry)
+                if wrapped_geometry:
+                    result.append(wrapped_geometry)
+            return GeometryCollection(result)
+        elif isinstance(geometry, geojson.geometry.Polygon):
+            return Polygon([Point(coordinate[1], coordinate[0])
+                            for coordinate in geometry.coordinates])
+        else:
+            _LOGGER.debug("Not implemented: %s", type(geometry))
+            return None
 
     @property
     def coordinates(self) -> Optional[Tuple[float, float]]:
