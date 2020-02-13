@@ -7,8 +7,6 @@ import pytest
 from aiohttp import ClientOSError
 
 from aio_geojson_client.consts import UPDATE_OK, UPDATE_ERROR
-from aio_geojson_client.geometries.geometry_collection import \
-    GeometryCollection
 from aio_geojson_client.geometries.point import Point
 from aio_geojson_client.geometries.polygon import Polygon
 from tests import MockGeoJsonFeed

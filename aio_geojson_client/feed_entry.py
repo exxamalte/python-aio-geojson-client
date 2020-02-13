@@ -7,7 +7,7 @@ import geojson
 from geojson import Feature
 
 from .geojson_distance_helper import GeoJsonDistanceHelper
-from .geometries import Geometry, GeometryCollection, Point, Polygon
+from .geometries import Geometry, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 """Test geometries."""
 import unittest
 
-from aio_geojson_client.geometries import Point, Polygon, GeometryCollection
+from aio_geojson_client.geometries import Point, Polygon
 
 
 class TestGeometries(unittest.TestCase):
@@ -92,31 +92,3 @@ class TestGeometries(unittest.TestCase):
         assert not polygon.is_inside(Point(34.0, -29.0))
         # 6. Invalid point
         assert not polygon.is_inside(None)
-
-    def test_geometry_collection(self):
-        """Test geometry collection."""
-        point = Point(-37.1234, 149.2345)
-        polygon = Polygon([
-            Point(30.0, -30.0),
-            Point(30.0, -25.0),
-            Point(35.0, -25.0),
-            Point(30.0, -30.0)
-        ])
-        geometry_collection = GeometryCollection([point, polygon])
-        assert repr(geometry_collection) == "<GeometryCollection(" \
-                                            "geometries=[<Point(" \
-                                            "latitude=-37.1234, " \
-                                            "longitude=149.2345)>, " \
-                                            "<Polygon(centroid=" \
-                                            "<Point(latitude=31.25, " \
-                                            "longitude=-27.5)>)>])>"
-        assert geometry_collection.geometries is not None
-        assert isinstance(geometry_collection.geometries[0], Point)
-        assert isinstance(geometry_collection.geometries[1], Polygon)
-
-    def test_geometry_collection_equality(self):
-        """Test geometry collection."""
-        point = Point(-37.1234, 149.2345)
-        geometry_collection1 = GeometryCollection([point])
-        geometry_collection2 = GeometryCollection([point])
-        assert geometry_collection1 == geometry_collection2

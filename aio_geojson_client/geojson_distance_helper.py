@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 
 from haversine import haversine
 
-from .geometries import Geometry, GeometryCollection, Point, Polygon
+from .geometries import Geometry, Point, Polygon
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,14 +24,6 @@ class GeoJsonDistanceHelper:
         if isinstance(geometry, Point):
             # Just extract latitude and longitude directly.
             latitude, longitude = geometry.latitude, geometry.longitude
-        elif isinstance(geometry, GeometryCollection):
-            # Go through the collection, and extract the first suitable
-            # geometry.
-            for entry in geometry.geometries:
-                latitude, longitude = \
-                    GeoJsonDistanceHelper.extract_coordinates(entry)
-                if latitude is not None and longitude is not None:
-                    break
         elif isinstance(geometry, Polygon):
             centroid = geometry.centroid
             latitude, longitude = centroid.latitude, centroid.longitude
@@ -49,9 +41,6 @@ class GeoJsonDistanceHelper:
         if isinstance(geometry, Point):
             distance = GeoJsonDistanceHelper._distance_to_point(
                 coordinates, geometry)
-        elif isinstance(geometry, GeometryCollection):
-            distance = GeoJsonDistanceHelper._distance_to_geometry_collection(
-                coordinates, geometry)
         elif isinstance(geometry, Polygon):
             distance = GeoJsonDistanceHelper._distance_to_polygon(
                 coordinates, geometry)
@@ -66,19 +55,6 @@ class GeoJsonDistanceHelper:
         # Swap coordinates to match: (latitude, longitude).
         return GeoJsonDistanceHelper._distance_to_coordinates(
             coordinates, (point.latitude, point.longitude))
-
-    @staticmethod
-    def _distance_to_geometry_collection(
-            coordinates: Tuple[float, float],
-            geometry_collection: GeometryCollection) -> float:
-        """Calculate the distance between coordinates and the geometry
-        collection."""
-        distance = float("inf")
-        for geometry in geometry_collection.geometries:
-            distance = min(distance,
-                           GeoJsonDistanceHelper.distance_to_geometry(
-                               coordinates, geometry))
-        return distance
 
     @staticmethod
     def _distance_to_polygon(coordinates: Tuple[float, float],
