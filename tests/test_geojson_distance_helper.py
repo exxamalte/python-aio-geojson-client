@@ -1,11 +1,8 @@
 """Tests for base classes."""
 import unittest
-from geojson import GeometryCollection
 from unittest.mock import MagicMock, ANY
 
 from aio_geojson_client.geojson_distance_helper import GeoJsonDistanceHelper
-from aio_geojson_client.geometries.geometry_collection import \
-    GeometryCollection
 from aio_geojson_client.geometries.point import Point
 from aio_geojson_client.geometries.polygon import Polygon
 
@@ -18,16 +15,6 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
         point = Point(-30.0, 151.0)
         latitude, longitude = GeoJsonDistanceHelper.\
             extract_coordinates(point)
-        assert latitude == -30.0
-        assert longitude == 151.0
-
-    def test_extract_coordinates_from_geometry_collection(self):
-        """Test extracting coordinates from geometry collection."""
-        point = Point(-30.0, 151.0)
-        mock_geometry_collection = MagicMock(spec=GeometryCollection)
-        mock_geometry_collection.geometries = [point]
-        latitude, longitude = GeoJsonDistanceHelper.\
-            extract_coordinates(mock_geometry_collection)
         assert latitude == -30.0
         assert longitude == 151.0
 
@@ -56,16 +43,6 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
         point = Point(-30.0, 151.0)
         distance = GeoJsonDistanceHelper.\
             distance_to_geometry(home_coordinates, point)
-        self.assertAlmostEqual(distance, 146.8, 1)
-
-    def test_distance_to_geometry_collection(self):
-        """Test calculating distance to geometry collection."""
-        home_coordinates = (-31.0, 150.0)
-        point = Point(-30.0, 151.0)
-        mock_geometry_collection = MagicMock(spec=GeometryCollection)
-        mock_geometry_collection.geometries = [point]
-        distance = GeoJsonDistanceHelper.\
-            distance_to_geometry(home_coordinates, mock_geometry_collection)
         self.assertAlmostEqual(distance, 146.8, 1)
 
     def test_distance_to_polygon_1(self):

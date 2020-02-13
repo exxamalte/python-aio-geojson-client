@@ -7,8 +7,6 @@ import pytest
 from aiohttp import ClientOSError
 
 from aio_geojson_client.consts import UPDATE_OK, UPDATE_ERROR
-from aio_geojson_client.geometries.geometry_collection import \
-    GeometryCollection
 from aio_geojson_client.geometries.point import Point
 from aio_geojson_client.geometries.polygon import Polygon
 from tests import MockGeoJsonFeed
@@ -118,7 +116,7 @@ async def test_update_geometries(aresponses, event_loop):
         assert feed_entry is not None
         assert feed_entry.title == "Title 1"
         assert feed_entry.external_id == "1234"
-        assert isinstance(feed_entry.geometry, Point)
+        assert isinstance(feed_entry.geometries[0], Point)
         assert feed_entry.coordinates == (-35.5, 150.5)
         assert round(abs(feed_entry.distance_to_home - 502.5), 1) == 0
         assert repr(feed_entry) == "<MockFeedEntry(id=1234)>"
@@ -127,14 +125,15 @@ async def test_update_geometries(aresponses, event_loop):
         assert feed_entry is not None
         assert feed_entry.title == "Title 2"
         assert feed_entry.external_id == "2345"
-        assert isinstance(feed_entry.geometry, Polygon)
+        assert isinstance(feed_entry.geometries[0], Polygon)
         assert feed_entry.coordinates == (-28.0, 152.0)
 
         feed_entry = entries[2]
         assert feed_entry is not None
         assert feed_entry.title == "Title 3"
         assert feed_entry.external_id == "3456"
-        assert isinstance(feed_entry.geometry, GeometryCollection)
+        assert isinstance(feed_entry.geometries[0], Point)
+        assert isinstance(feed_entry.geometries[1], Polygon)
         assert feed_entry.coordinates == (-35.5, 150.5)
 
 
