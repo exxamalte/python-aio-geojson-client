@@ -121,7 +121,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         # Always remove entries without geometry
         filtered_entries = list(
             filter(lambda entry:
-                   entry.geometry is not None,
+                   entry.geometries is not None,
                    filtered_entries))
         # Filter by distance.
         if self._filter_radius:
