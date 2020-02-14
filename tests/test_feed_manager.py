@@ -1,11 +1,10 @@
 """Test for the generic geojson feed manager."""
 import aiohttp
+
 import pytest
-
-from asynctest import patch, CoroutineMock
-
 from aio_geojson_client.consts import UPDATE_OK_NO_DATA
 from aio_geojson_client.feed_manager import FeedManagerBase
+from asynctest import CoroutineMock, patch
 from tests import MockGeoJsonFeed
 from tests.utils import load_fixture
 

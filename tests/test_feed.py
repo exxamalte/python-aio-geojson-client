@@ -3,10 +3,10 @@ import asyncio
 from unittest.mock import MagicMock
 
 import aiohttp
-import pytest
 from aiohttp import ClientOSError
 
-from aio_geojson_client.consts import UPDATE_OK, UPDATE_ERROR
+import pytest
+from aio_geojson_client.consts import UPDATE_ERROR, UPDATE_OK
 from aio_geojson_client.geometries.point import Point
 from aio_geojson_client.geometries.polygon import Polygon
 from tests import MockGeoJsonFeed

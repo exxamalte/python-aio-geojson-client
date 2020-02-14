@@ -1,7 +1,7 @@
 """Feed Entry."""
 import logging
 from abc import ABC, abstractmethod
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 import geojson
 from geojson import Feature
