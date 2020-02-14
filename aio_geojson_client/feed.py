@@ -118,10 +118,11 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                         entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
+        _LOGGER.debug("Entries before filtering %s", filtered_entries)
         # Always remove entries without geometry
         filtered_entries = list(
             filter(lambda entry:
-                   entry.geometries is not None,
+                   entry.geometries is not None and len(entry.geometries) >= 1,
                    filtered_entries))
         # Filter by distance.
         if self._filter_radius:
@@ -129,6 +130,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                 filter(lambda entry:
                        entry.distance_to_home <= self._filter_radius,
                        filtered_entries))
+        _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
 
     @abstractmethod

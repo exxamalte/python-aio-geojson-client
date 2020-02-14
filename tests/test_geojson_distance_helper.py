@@ -1,6 +1,6 @@
 """Tests for base classes."""
 import unittest
-from unittest.mock import MagicMock, ANY
+from unittest.mock import ANY, MagicMock
 
 from aio_geojson_client.geojson_distance_helper import GeoJsonDistanceHelper
 from aio_geojson_client.geometries.point import Point
