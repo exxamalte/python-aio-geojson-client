@@ -93,12 +93,12 @@ class GeoJsonDistanceHelper:
             edge: Tuple[Point, Point]) -> float:
         """Calculate distance between coordinates and provided edge."""
         perpendicular_point = GeoJsonDistanceHelper._perpendicular_point(
-            edge, (coordinates[0], coordinates[1]))
+            edge, Point(coordinates[0], coordinates[1]))
         # If there is a perpendicular point on the edge -> calculate distance.
         # If there isn't, then the distance to the end points of the edge will
         # need to be considered separately.
         if perpendicular_point:
-            distance = GeoJsonDistanceHelper._distance_to_coordinates(
+            distance = GeoJsonDistanceHelper._distance_to_point(
                 coordinates, perpendicular_point)
             _LOGGER.debug("Distance between %s and %s: %s",
                           coordinates, edge, distance)
@@ -108,14 +108,14 @@ class GeoJsonDistanceHelper:
     @staticmethod
     def _perpendicular_point(
             edge: Tuple[Point, Point],
-            point: Tuple[float, float]) -> Optional[Tuple[float, float]]:
+            point: Point) -> Optional[Point]:
         """Find a perpendicular point on the edge to the provided point."""
         a, b = edge
         # Safety check: a and b can't be an edge if they are the same point.
         if a == b:
             return None
-        px = point[1]
-        py = point[0]
+        px = point.longitude
+        py = point.latitude
         ax = a.longitude
         ay = a.latitude
         bx = b.longitude
@@ -139,5 +139,5 @@ class GeoJsonDistanceHelper:
             if rx > 180:
                 # Correct longitude.
                 rx -= 360.0
-            return ry, rx
+            return Point(ry, rx)
         return None
