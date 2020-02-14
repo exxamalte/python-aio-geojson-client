@@ -1,5 +1,10 @@
 # Changes
 
+## 0.12 (14/02/2020)
+* Added type hints.
+* Improved internal handling of GeoJSON geometry data.
+* Retain backwards compatibility with v0.11 for downstream libraries.
+
 ## 0.11 (05/11/2019)
 * Python 3.8 compatibility.
 
