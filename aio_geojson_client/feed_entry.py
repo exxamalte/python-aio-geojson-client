@@ -46,8 +46,10 @@ class FeedEntry(ABC):
                     result += wrapped_geometry
             return result
         elif isinstance(geometry, geojson.geometry.Polygon):
+            # Currently only support polygons without a hole
+            # (https://tools.ietf.org/html/rfc7946#page-23).
             return [Polygon([Point(coordinate[1], coordinate[0])
-                             for coordinate in geometry.coordinates])]
+                             for coordinate in geometry.coordinates[0]])]
         else:
             _LOGGER.debug("Not implemented: %s", type(geometry))
             return None
