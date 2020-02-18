@@ -1,5 +1,8 @@
 # Changes
 
+## 0.13 (18/02/2020)
+* Fixes extraction of polygons from a feed (polygon without hole only).
+
 ## 0.12 (14/02/2020)
 * Added type hints.
 * Improved internal handling of GeoJSON geometry data.
