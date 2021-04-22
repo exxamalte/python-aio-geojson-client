@@ -90,6 +90,30 @@ async def test_update_ok_with_filtering(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
+async def test_update_ok_with_filter_override(aresponses, event_loop):
+    """Test updating feed is ok."""
+    home_coordinates = (-37.0, 150.0)
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture('generic_feed_1.json'),
+                            status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+        feed = MockGeoJsonFeed(websession, home_coordinates,
+                               "http://test.url/testpath", filter_radius=60.0)
+        status, entries = await feed.update(filter_radius=90.0)
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 4
+        assert round(abs(entries[0].distance_to_home - 82.0), 1) == 0
+        assert round(abs(entries[1].distance_to_home - 77.0), 1) == 0
+        assert round(abs(entries[2].distance_to_home - 84.6), 1) == 0
+
+
+@pytest.mark.asyncio
 async def test_update_geometries(aresponses, event_loop):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
