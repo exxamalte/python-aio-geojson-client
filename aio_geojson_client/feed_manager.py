@@ -5,7 +5,7 @@ This allows managing feeds and their entries throughout their life-cycle.
 """
 import logging
 from datetime import datetime
-from typing import Awaitable, Callable, List, Optional, Set
+from typing import Awaitable, Callable, List, Optional, Set, Dict
 
 from .consts import UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed import GeoJsonFeed
@@ -41,9 +41,9 @@ class FeedManagerBase:
         return '<{}(feed={})>'.format(
             self.__class__.__name__, self._feed)
 
-    async def update(self, **filter_overrides):
+    async def update(self, filter_overrides: Dict = None):
         """Update the feed and then update connected entities."""
-        status, feed_entries = await self._feed.update(**filter_overrides)
+        status, feed_entries = await self._feed.update(filter_overrides=filter_overrides)
         # Record current time of update.
         self._last_update = datetime.now()
         count_created = 0

@@ -104,7 +104,7 @@ async def test_update_ok_with_filter_override(aresponses, event_loop):
     async with aiohttp.ClientSession(loop=event_loop) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates,
                                "http://test.url/testpath", filter_radius=60.0)
-        status, entries = await feed.update(filter_radius=90.0)
+        status, entries = await feed.update(filter_overrides={'filter_radius': 90.0})
         assert status == UPDATE_OK
         assert entries is not None
         assert len(entries) == 4

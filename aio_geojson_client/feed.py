@@ -53,7 +53,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    async def update(self, **filter_overrides) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+    async def update(self, filter_overrides: Dict = None) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
         if status == UPDATE_OK:
@@ -64,7 +64,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                 for feature in data.features:
                     entries.append(self._new_entry(self._home_coordinates,
                                                    feature, global_data))
-                filtered_entries = self._filter_entries(entries, **filter_overrides)
+                filtered_entries = self._filter_entries(entries, filter_overrides=filter_overrides)
                 self._last_timestamp = self._extract_last_timestamp(
                     filtered_entries)
                 return UPDATE_OK, filtered_entries
@@ -116,7 +116,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _filter_entries(self,
                         entries: List[T_FEED_ENTRY],
-                        **filter_overrides) -> List[T_FEED_ENTRY]:
+                        filter_overrides: Dict = None) -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
