@@ -5,6 +5,8 @@ import pytest
 from aio_geojson_client.consts import UPDATE_OK_NO_DATA
 from aio_geojson_client.feed_manager import FeedManagerBase
 from asynctest import CoroutineMock, patch
+
+from aio_geojson_client.filter import GeoJsonFeedFilterDefinition
 from tests import MockGeoJsonFeed
 from tests.utils import load_fixture
 
@@ -164,7 +166,7 @@ async def test_feed_manager(aresponses, event_loop):
             aresponses.Response(text=load_fixture('generic_feed_1.json'),
                                 status=200),
         )
-        await feed_manager.update(filter_overrides={'filter_radius': 750.0})
+        await feed_manager.update(filter_overrides=GeoJsonFeedFilterDefinition(radius=750.0))
         entries = feed_manager.feed_entries
         assert entries is not None
         assert len(entries) == 2

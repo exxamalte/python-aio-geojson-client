@@ -12,7 +12,7 @@ from aiohttp import ClientSession, client_exceptions
 from geojson import FeatureCollection
 
 from .consts import (DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR, UPDATE_OK,
-                     UPDATE_OK_NO_DATA)
+                     UPDATE_OK_NO_DATA, T_FILTER_DEFINITION)
 from .feed_entry import FeedEntry
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    async def update(self, filter_overrides: Dict = None) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+    async def update(self, filter_overrides: T_FILTER_DEFINITION = None) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
         if status == UPDATE_OK:
@@ -116,7 +116,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
 
     def _filter_entries(self,
                         entries: List[T_FEED_ENTRY],
-                        filter_overrides: Dict = None) -> List[T_FEED_ENTRY]:
+                        filter_overrides: T_FILTER_DEFINITION = None) -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -126,11 +126,8 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                    entry.geometries is not None and len(entry.geometries) >= 1,
                    filtered_entries))
         # Filter by distance.
-        filter_radius = None
-        if filter_overrides and 'filter_radius' in filter_overrides:
-            filter_radius = filter_overrides.get('filter_radius')
-        else:
-            filter_radius = self._filter_radius
+        filter_radius = filter_overrides.radius \
+            if filter_overrides and filter_overrides.radius else self._filter_radius
         if filter_radius:
             filtered_entries = list(
                 filter(lambda entry:

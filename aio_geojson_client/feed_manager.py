@@ -7,7 +7,7 @@ import logging
 from datetime import datetime
 from typing import Awaitable, Callable, List, Optional, Set, Dict
 
-from .consts import UPDATE_OK, UPDATE_OK_NO_DATA
+from .consts import UPDATE_OK, UPDATE_OK_NO_DATA, T_FILTER_DEFINITION
 from .feed import GeoJsonFeed
 from .feed_entry import FeedEntry
 from .status_update import StatusUpdate
@@ -41,7 +41,7 @@ class FeedManagerBase:
         return '<{}(feed={})>'.format(
             self.__class__.__name__, self._feed)
 
-    async def update(self, filter_overrides: Dict = None):
+    async def update(self, filter_overrides: T_FILTER_DEFINITION = None):
         """Update the feed and then update connected entities."""
         status, feed_entries = await self._feed.update(filter_overrides=filter_overrides)
         # Record current time of update.

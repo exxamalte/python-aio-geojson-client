@@ -7,6 +7,7 @@ from aiohttp import ClientOSError
 
 import pytest
 from aio_geojson_client.consts import UPDATE_ERROR, UPDATE_OK
+from aio_geojson_client.filter import GeoJsonFeedFilterDefinition
 from aio_geojson_client.geometries.point import Point
 from aio_geojson_client.geometries.polygon import Polygon
 from tests import MockGeoJsonFeed
@@ -104,7 +105,7 @@ async def test_update_ok_with_filter_override(aresponses, event_loop):
     async with aiohttp.ClientSession(loop=event_loop) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates,
                                "http://test.url/testpath", filter_radius=60.0)
-        status, entries = await feed.update(filter_overrides={'filter_radius': 90.0})
+        status, entries = await feed.update(filter_overrides=GeoJsonFeedFilterDefinition(radius=90.0))
         assert status == UPDATE_OK
         assert entries is not None
         assert len(entries) == 4
