@@ -5,6 +5,8 @@ import pytest
 from aio_geojson_client.consts import UPDATE_OK_NO_DATA
 from aio_geojson_client.feed_manager import FeedManagerBase
 from asynctest import CoroutineMock, patch
+
+from aio_geojson_client.filter_definition import GeoJsonFeedFilterDefinition
 from tests import MockGeoJsonFeed
 from tests.utils import load_fixture
 
@@ -151,6 +153,25 @@ async def test_feed_manager(aresponses, event_loop):
         assert len(generated_entity_external_ids) == 0
         assert len(updated_entity_external_ids) == 0
         assert len(removed_entity_external_ids) == 3
+
+        # Simulate an update with dynamic filter.
+        generated_entity_external_ids.clear()
+        updated_entity_external_ids.clear()
+        removed_entity_external_ids.clear()
+
+        aresponses.add(
+            "test.url",
+            "/testpath",
+            "get",
+            aresponses.Response(text=load_fixture('generic_feed_1.json'),
+                                status=200),
+        )
+        await feed_manager.update(filter_overrides=GeoJsonFeedFilterDefinition(radius=750.0))
+        entries = feed_manager.feed_entries
+        assert entries is not None
+        assert len(entries) == 2
+        assert feed_manager.last_update is not None
+        assert feed_manager.last_timestamp is None
 
 
 @pytest.mark.asyncio

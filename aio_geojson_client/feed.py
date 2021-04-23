@@ -12,7 +12,7 @@ from aiohttp import ClientSession, client_exceptions
 from geojson import FeatureCollection
 
 from .consts import (DEFAULT_REQUEST_TIMEOUT, UPDATE_ERROR, UPDATE_OK,
-                     UPDATE_OK_NO_DATA)
+                     UPDATE_OK_NO_DATA, T_FILTER_DEFINITION)
 from .feed_entry import FeedEntry
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+    async def update(self, filter_overrides: T_FILTER_DEFINITION = None) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
         if status == UPDATE_OK:
@@ -64,7 +64,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                 for feature in data.features:
                     entries.append(self._new_entry(self._home_coordinates,
                                                    feature, global_data))
-                filtered_entries = self._filter_entries(entries)
+                filtered_entries = self._filter_entries(entries, filter_overrides=filter_overrides)
                 self._last_timestamp = self._extract_last_timestamp(
                     filtered_entries)
                 return UPDATE_OK, filtered_entries
@@ -115,7 +115,8 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
             return UPDATE_ERROR, None
 
     def _filter_entries(self,
-                        entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
+                        entries: List[T_FEED_ENTRY],
+                        filter_overrides: T_FILTER_DEFINITION = None) -> List[T_FEED_ENTRY]:
         """Filter the provided entries."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -125,10 +126,12 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                    entry.geometries is not None and len(entry.geometries) >= 1,
                    filtered_entries))
         # Filter by distance.
-        if self._filter_radius:
+        filter_radius = filter_overrides.radius \
+            if filter_overrides and filter_overrides.radius else self._filter_radius
+        if filter_radius:
             filtered_entries = list(
                 filter(lambda entry:
-                       entry.distance_to_home <= self._filter_radius,
+                       entry.distance_to_home <= filter_radius,
                        filtered_entries))
         _LOGGER.debug("Entries after filtering %s", filtered_entries)
         return filtered_entries
