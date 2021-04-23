@@ -1,7 +1,7 @@
 """Constants."""
 from typing import TypeVar
 
-from .filter import GeoJsonFeedFilterDefinition
+from .filter_definition import GeoJsonFeedFilterDefinition
 
 DEFAULT_REQUEST_TIMEOUT = 10
 

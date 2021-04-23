@@ -7,7 +7,7 @@ from aiohttp import ClientOSError
 
 import pytest
 from aio_geojson_client.consts import UPDATE_ERROR, UPDATE_OK
-from aio_geojson_client.filter import GeoJsonFeedFilterDefinition
+from aio_geojson_client.filter_definition import GeoJsonFeedFilterDefinition
 from aio_geojson_client.geometries.point import Point
 from aio_geojson_client.geometries.polygon import Polygon
 from tests import MockGeoJsonFeed

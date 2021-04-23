@@ -6,7 +6,7 @@ from aio_geojson_client.consts import UPDATE_OK_NO_DATA
 from aio_geojson_client.feed_manager import FeedManagerBase
 from asynctest import CoroutineMock, patch
 
-from aio_geojson_client.filter import GeoJsonFeedFilterDefinition
+from aio_geojson_client.filter_definition import GeoJsonFeedFilterDefinition
 from tests import MockGeoJsonFeed
 from tests.utils import load_fixture
 
