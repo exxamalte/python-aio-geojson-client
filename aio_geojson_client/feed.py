@@ -13,10 +13,10 @@ from geojson import FeatureCollection
 
 from .consts import (
     DEFAULT_REQUEST_TIMEOUT,
+    T_FILTER_DEFINITION,
     UPDATE_ERROR,
     UPDATE_OK,
     UPDATE_OK_NO_DATA,
-    T_FILTER_DEFINITION,
 )
 from .feed_entry import FeedEntry
 
