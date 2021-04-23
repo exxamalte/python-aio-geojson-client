@@ -14,8 +14,9 @@ class Point(Geometry):
 
     def __repr__(self):
         """Return string representation of this point."""
-        return '<{}(latitude={}, longitude={})>'.format(
-            self.__class__.__name__, self.latitude, self.longitude)
+        return "<{}(latitude={}, longitude={})>".format(
+            self.__class__.__name__, self.latitude, self.longitude
+        )
 
     def __hash__(self) -> int:
         """Return unique hash of this point."""
@@ -24,10 +25,10 @@ class Point(Geometry):
     def __eq__(self, other: object) -> bool:
         """Return if this object is equal to other object."""
         return (
-             self.__class__ == other.__class__ and
-             self.latitude == other.latitude and
-             self.longitude == other.longitude
-         )
+            self.__class__ == other.__class__
+            and self.latitude == other.latitude
+            and self.longitude == other.longitude
+        )
 
     @property
     def latitude(self) -> Optional[float]:

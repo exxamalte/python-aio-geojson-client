@@ -6,15 +6,17 @@ from typing import Optional
 class StatusUpdate:
     """Status Update class."""
 
-    def __init__(self,
-                 status: str,
-                 last_update: Optional[datetime],
-                 last_update_successful: Optional[datetime],
-                 last_timestamp: Optional[datetime],
-                 total: int,
-                 created: int,
-                 updated: int,
-                 removed: int):
+    def __init__(
+        self,
+        status: str,
+        last_update: Optional[datetime],
+        last_update_successful: Optional[datetime],
+        last_timestamp: Optional[datetime],
+        total: int,
+        created: int,
+        updated: int,
+        removed: int,
+    ):
         """Initialise this status update."""
         self._status = status
         self._last_update = last_update
@@ -27,9 +29,9 @@ class StatusUpdate:
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return '<{}({}@{})>'.format(self.__class__.__name__,
-                                    self.status,
-                                    self.last_update)
+        return "<{}({}@{})>".format(
+            self.__class__.__name__, self.status, self.last_update
+        )
 
     @property
     def status(self) -> str:
