@@ -2,7 +2,6 @@
 
 
 class GeoJsonFeedFilterDefinition:
-
     def __init__(self, radius: float = None):
         self._radius = radius
 
@@ -13,4 +12,5 @@ class GeoJsonFeedFilterDefinition:
 
     @radius.setter
     def radius(self, value: float):
+        """Set radius."""
         self._radius = value

@@ -22,16 +22,16 @@ async def test_update_ok(aresponses, event_loop):
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('generic_feed_1.json'),
-                            status=200),
+        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
 
-        feed = MockGeoJsonFeed(websession, home_coordinates,
-                               "http://test.url/testpath")
-        assert repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), " \
-                             "url=http://test.url/testpath, radius=None)>"
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None)>"
+        )
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -74,13 +74,13 @@ async def test_update_ok_with_filtering(aresponses, event_loop):
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('generic_feed_1.json'),
-                            status=200),
+        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoJsonFeed(websession, home_coordinates,
-                               "http://test.url/testpath", filter_radius=90.0)
+        feed = MockGeoJsonFeed(
+            websession, home_coordinates, "http://test.url/testpath", filter_radius=90.0
+        )
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -98,14 +98,16 @@ async def test_update_ok_with_filter_override(aresponses, event_loop):
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('generic_feed_1.json'),
-                            status=200),
+        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoJsonFeed(websession, home_coordinates,
-                               "http://test.url/testpath", filter_radius=60.0)
-        status, entries = await feed.update(filter_overrides=GeoJsonFeedFilterDefinition(radius=90.0))
+        feed = MockGeoJsonFeed(
+            websession, home_coordinates, "http://test.url/testpath", filter_radius=60.0
+        )
+        status, entries = await feed.update(
+            filter_overrides=GeoJsonFeedFilterDefinition(radius=90.0)
+        )
         assert status == UPDATE_OK
         assert entries is not None
         assert len(entries) == 4
@@ -122,16 +124,16 @@ async def test_update_geometries(aresponses, event_loop):
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('generic_feed_3.json'),
-                            status=200),
+        aresponses.Response(text=load_fixture("generic_feed_3.json"), status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
 
-        feed = MockGeoJsonFeed(websession, home_coordinates,
-                               "http://test.url/testpath")
-        assert repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), " \
-                             "url=http://test.url/testpath, radius=None)>"
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None)>"
+        )
         status, entries = await feed.update()
         assert status == UPDATE_OK
         assert entries is not None
@@ -170,8 +172,9 @@ async def test_update_with_client_exception(event_loop):
     async with aiohttp.ClientSession(loop=event_loop):
         mock_websession = MagicMock()
         mock_websession.request.side_effect = ClientOSError
-        feed = MockGeoJsonFeed(mock_websession, home_coordinates,
-                               "http://test.url/badpath")
+        feed = MockGeoJsonFeed(
+            mock_websession, home_coordinates, "http://test.url/badpath"
+        )
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert feed.last_timestamp is None
@@ -181,13 +184,10 @@ async def test_update_with_client_exception(event_loop):
 async def test_update_with_request_exception(aresponses, event_loop):
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url", "/badpath", "get", aresponses.Response(status=404)
-    )
+    aresponses.add("test.url", "/badpath", "get", aresponses.Response(status=404))
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoJsonFeed(websession, home_coordinates,
-                               "http://test.url/badpath")
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert feed.last_timestamp is None
@@ -198,13 +198,11 @@ async def test_update_with_json_decode_error(aresponses, event_loop):
     """Test updating feed raises exception."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
-        "test.url", "/badjson", "get", aresponses.Response(text="NOT JSON",
-                                                           status=200)
+        "test.url", "/badjson", "get", aresponses.Response(text="NOT JSON", status=200)
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
-        feed = MockGeoJsonFeed(websession, home_coordinates,
-                               "http://test.url/badjson")
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/badjson")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert entries is None
@@ -218,8 +216,9 @@ async def test_update_with_timeout_error(event_loop):
     async with aiohttp.ClientSession(loop=event_loop):
         mock_websession = MagicMock()
         mock_websession.request.side_effect = asyncio.TimeoutError
-        feed = MockGeoJsonFeed(mock_websession, home_coordinates,
-                               "http://test.url/goodpath")
+        feed = MockGeoJsonFeed(
+            mock_websession, home_coordinates, "http://test.url/goodpath"
+        )
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert feed.last_timestamp is None

@@ -19,15 +19,12 @@ async def test_feed_manager(aresponses, event_loop):
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('generic_feed_1.json'),
-                            status=200),
+        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
 
-        feed = MockGeoJsonFeed(websession,
-                               home_coordinates,
-                               "http://test.url/testpath")
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
 
         # This will just record calls and keep track of external ids.
         generated_entity_external_ids = []
@@ -46,12 +43,15 @@ async def test_feed_manager(aresponses, event_loop):
             """Remove entity."""
             removed_entity_external_ids.append(external_id)
 
-        feed_manager = FeedManagerBase(feed, _generate_entity, _update_entity,
-                                       _remove_entity)
-        assert repr(feed_manager) == "<FeedManagerBase(feed=<" \
-                                     "MockGeoJsonFeed(home=(-31.0, 151.0), " \
-                                     "url=http://test.url/testpath, " \
-                                     "radius=None)>)>"
+        feed_manager = FeedManagerBase(
+            feed, _generate_entity, _update_entity, _remove_entity
+        )
+        assert (
+            repr(feed_manager) == "<FeedManagerBase(feed=<"
+            "MockGeoJsonFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, "
+            "radius=None)>)>"
+        )
         await feed_manager.update()
         entries = feed_manager.feed_entries
         assert entries is not None
@@ -96,8 +96,7 @@ async def test_feed_manager(aresponses, event_loop):
             "test.url",
             "/testpath",
             "get",
-            aresponses.Response(text=load_fixture('generic_feed_2.json'),
-                                status=200),
+            aresponses.Response(text=load_fixture("generic_feed_2.json"), status=200),
         )
 
         await feed_manager.update()
@@ -122,8 +121,9 @@ async def test_feed_manager(aresponses, event_loop):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        with patch("aio_geojson_client.feed.GeoJsonFeed._fetch",
-                   new_callable=CoroutineMock) as mock_fetch:
+        with patch(
+            "aio_geojson_client.feed.GeoJsonFeed._fetch", new_callable=CoroutineMock
+        ) as mock_fetch:
             mock_fetch.return_value = (UPDATE_OK_NO_DATA, None)
 
             await feed_manager.update()
@@ -163,10 +163,11 @@ async def test_feed_manager(aresponses, event_loop):
             "test.url",
             "/testpath",
             "get",
-            aresponses.Response(text=load_fixture('generic_feed_1.json'),
-                                status=200),
+            aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
         )
-        await feed_manager.update(filter_overrides=GeoJsonFeedFilterDefinition(radius=750.0))
+        await feed_manager.update(
+            filter_overrides=GeoJsonFeedFilterDefinition(radius=750.0)
+        )
         entries = feed_manager.feed_entries
         assert entries is not None
         assert len(entries) == 2
@@ -182,15 +183,12 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         "test.url",
         "/testpath",
         "get",
-        aresponses.Response(text=load_fixture('generic_feed_1.json'),
-                            status=200),
+        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as websession:
 
-        feed = MockGeoJsonFeed(websession,
-                               home_coordinates,
-                               "http://test.url/testpath")
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
 
         # This will just record calls and keep track of external ids.
         generated_entity_external_ids = []
@@ -214,12 +212,15 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
             """Capture status update details."""
             status_update.append(status_details)
 
-        feed_manager = FeedManagerBase(feed, _generate_entity, _update_entity,
-                                       _remove_entity, _status)
-        assert repr(feed_manager) == "<FeedManagerBase(feed=<" \
-                                     "MockGeoJsonFeed(home=(-31.0, 151.0), " \
-                                     "url=http://test.url/testpath, " \
-                                     "radius=None)>)>"
+        feed_manager = FeedManagerBase(
+            feed, _generate_entity, _update_entity, _remove_entity, _status
+        )
+        assert (
+            repr(feed_manager) == "<FeedManagerBase(feed=<"
+            "MockGeoJsonFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, "
+            "radius=None)>)>"
+        )
         await feed_manager.update()
         entries = feed_manager.feed_entries
         assert entries is not None
@@ -240,8 +241,10 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         assert status_update[0].created == 5
         assert status_update[0].updated == 0
         assert status_update[0].removed == 0
-        assert repr(status_update[0]) == f"<StatusUpdate(" \
+        assert (
+            repr(status_update[0]) == f"<StatusUpdate("
             f"OK@{status_update[0].last_update})>"
+        )
 
         # Simulate an update with no data.
         generated_entity_external_ids.clear()
@@ -267,6 +270,5 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         assert status_update[0].status == "ERROR"
         assert status_update[0].last_update is not None
         assert status_update[0].last_update_successful is not None
-        assert status_update[0].last_update_successful == \
-            last_update_successful
+        assert status_update[0].last_update_successful == last_update_successful
         assert status_update[0].total == 0

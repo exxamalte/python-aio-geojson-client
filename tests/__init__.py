@@ -5,13 +5,12 @@ from typing import Optional
 from aio_geojson_client.feed import GeoJsonFeed
 from aio_geojson_client.feed_entry import FeedEntry
 
-ATTR_GUID = 'guid'
-ATTR_ID = 'id'
-ATTR_TITLE = 'title'
+ATTR_GUID = "guid"
+ATTR_ID = "id"
+ATTR_TITLE = "title"
 
 
 class MockGeoJsonFeed(GeoJsonFeed):
-
     def _extract_from_feed(self, feed) -> Optional:
         return None
 
@@ -24,7 +23,6 @@ class MockGeoJsonFeed(GeoJsonFeed):
 
 
 class MockSimpleFeedEntry(FeedEntry):
-
     @property
     def title(self) -> Optional[str]:
         return "mock title"

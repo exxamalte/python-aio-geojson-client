@@ -14,8 +14,7 @@ class Polygon(Geometry):
 
     def __repr__(self):
         """Return string representation of this polygon."""
-        return '<{}(centroid={})>'.format(
-            self.__class__.__name__, self.centroid)
+        return "<{}(centroid={})>".format(self.__class__.__name__, self.centroid)
 
     def __hash__(self) -> int:
         """Return unique hash of this polygon."""
@@ -23,10 +22,7 @@ class Polygon(Geometry):
 
     def __eq__(self, other: object) -> bool:
         """Return if this object is equal to other object."""
-        return (
-             self.__class__ == other.__class__ and
-             self.points == other.points
-         )
+        return self.__class__ == other.__class__ and self.points == other.points
 
     @property
     def points(self) -> Optional[List]:
@@ -38,7 +34,7 @@ class Polygon(Geometry):
         """Return all edges of this polygon."""
         edges = []
         for i in range(1, len(self.points)):
-            previous = self.points[i-1]
+            previous = self.points[i - 1]
             current = self.points[i]
             edges.append((previous, current))
         return edges
