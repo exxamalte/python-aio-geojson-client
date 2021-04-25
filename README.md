@@ -30,6 +30,8 @@ After instantiating a particular class and supply the required parameters, you
 can call `update` to retrieve the feed data. The return value will be a tuple 
 of a status code and the actual data in the form of a list of feed entries 
 specific to the selected feed.
+Alternatively, calling method `update_override` allows passing in ad-hoc filters
+that override the globally defined filters.
 
 Status Codes
 * _OK_: Update went fine and data was retrieved. The library may still 

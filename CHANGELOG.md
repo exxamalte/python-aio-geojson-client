@@ -1,5 +1,11 @@
 # Changes
 
+## 0.14 (25/04/2021)
+* Allow overriding filters on update (with backwards compatibility).
+* Exclude tests subpackages from distribution (thanks @scop).
+* Code housekeeping (black formatting, isort, flake8).
+* Python 3.9 support.
+
 ## 0.13 (18/02/2020)
 * Fixes extraction of polygons from a feed (polygon without hole only).
 
