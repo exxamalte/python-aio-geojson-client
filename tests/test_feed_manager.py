@@ -164,7 +164,7 @@ async def test_feed_manager(aresponses, event_loop):
             "get",
             aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
         )
-        await feed_manager.update(
+        await feed_manager.update_override(
             filter_overrides=GeoJsonFeedFilterDefinition(radius=750.0)
         )
         entries = feed_manager.feed_entries

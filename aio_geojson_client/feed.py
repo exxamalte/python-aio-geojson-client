@@ -4,7 +4,7 @@ import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
 from json import JSONDecodeError
-from typing import Dict, Generic, List, Optional, Tuple, TypeVar
+from typing import Callable, Dict, Generic, List, Optional, Tuple
 
 import aiohttp
 import geojson
@@ -13,16 +13,14 @@ from geojson import FeatureCollection
 
 from .consts import (
     DEFAULT_REQUEST_TIMEOUT,
+    T_FEED_ENTRY,
     T_FILTER_DEFINITION,
     UPDATE_ERROR,
     UPDATE_OK,
     UPDATE_OK_NO_DATA,
 )
-from .feed_entry import FeedEntry
 
 _LOGGER = logging.getLogger(__name__)
-
-T_FEED_ENTRY = TypeVar("T_FEED_ENTRY", bound=FeedEntry)
 
 
 class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
@@ -62,8 +60,8 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         """Define client session timeout in seconds. Override if necessary."""
         return DEFAULT_REQUEST_TIMEOUT
 
-    async def update(
-        self, filter_overrides: T_FILTER_DEFINITION = None
+    async def _update_internal(
+        self, filter_function: Callable[[List[T_FEED_ENTRY]], List[T_FEED_ENTRY]]
     ) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
@@ -76,9 +74,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                     entries.append(
                         self._new_entry(self._home_coordinates, feature, global_data)
                     )
-                filtered_entries = self._filter_entries(
-                    entries, filter_overrides=filter_overrides
-                )
+                filtered_entries = filter_function(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
                 return UPDATE_OK, filtered_entries
             else:
@@ -91,6 +87,23 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
             # Error happened while fetching the feed.
             self._last_timestamp = None
             return UPDATE_ERROR, None
+
+    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+        """Update from external source and return filtered entries."""
+        return await self._update_internal(
+            lambda entries: self._filter_entries(entries)
+        )
+
+    async def update_override(
+        self, filter_overrides: T_FILTER_DEFINITION = None
+    ) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+        """Update from external source and return filtered entries with ability to
+        override filter conditions."""
+        return await self._update_internal(
+            lambda entries: self._filter_entries_override(
+                entries, filter_overrides=filter_overrides
+            )
+        )
 
     async def _fetch(
         self, method: str = "GET", headers=None, params=None
@@ -129,10 +142,14 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
             )
             return UPDATE_ERROR, None
 
-    def _filter_entries(
+    def _filter_entries(self, entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
+        """Filter the provided entries (for backwards-compatibility)."""
+        return self._filter_entries_override(entries, None)
+
+    def _filter_entries_override(
         self, entries: List[T_FEED_ENTRY], filter_overrides: T_FILTER_DEFINITION = None
     ) -> List[T_FEED_ENTRY]:
-        """Filter the provided entries."""
+        """Filter the provided entries with ability to override filter definitions."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
         # Always remove entries without geometry

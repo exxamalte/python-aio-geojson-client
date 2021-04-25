@@ -1,9 +1,9 @@
 """Base class for the feed manager. This allows managing feeds and their entries throughout their life-cycle."""
 import logging
 from datetime import datetime
-from typing import Awaitable, Callable, Dict, List, Optional, Set
+from typing import Awaitable, Callable, List, Optional, Set
 
-from .consts import T_FILTER_DEFINITION, UPDATE_OK, UPDATE_OK_NO_DATA
+from .consts import T_FEED_ENTRY, T_FILTER_DEFINITION, UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed import GeoJsonFeed
 from .feed_entry import FeedEntry
 from .status_update import StatusUpdate
@@ -37,11 +37,10 @@ class FeedManagerBase:
         """Return string representation of this feed."""
         return "<{}(feed={})>".format(self.__class__.__name__, self._feed)
 
-    async def update(self, filter_overrides: T_FILTER_DEFINITION = None):
+    async def _update_internal(
+        self, status: str, feed_entries: Optional[List[T_FEED_ENTRY]]
+    ):
         """Update the feed and then update connected entities."""
-        status, feed_entries = await self._feed.update(
-            filter_overrides=filter_overrides
-        )
         # Record current time of update.
         self._last_update = datetime.now()
         count_created = 0
@@ -69,6 +68,18 @@ class FeedManagerBase:
             count_removed = await self._update_feed_remove_entries(set())
         # Send status update to subscriber.
         await self._status_update(status, count_created, count_updated, count_removed)
+
+    async def update(self):
+        """Update the feed and then update connected entities."""
+        status, feed_entries = await self._feed.update()
+        await self._update_internal(status, feed_entries)
+
+    async def update_override(self, filter_overrides: T_FILTER_DEFINITION = None):
+        """Update the feed and then update connected entities."""
+        status, feed_entries = await self._feed.update_override(
+            filter_overrides=filter_overrides
+        )
+        await self._update_internal(status, feed_entries)
 
     async def _store_feed_entries(
         self, status: str, feed_entries: Optional[List[FeedEntry]]
