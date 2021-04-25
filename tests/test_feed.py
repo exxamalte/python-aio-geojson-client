@@ -105,7 +105,7 @@ async def test_update_ok_with_filter_override(aresponses, event_loop):
         feed = MockGeoJsonFeed(
             websession, home_coordinates, "http://test.url/testpath", filter_radius=60.0
         )
-        status, entries = await feed.update(
+        status, entries = await feed.update_override(
             filter_overrides=GeoJsonFeedFilterDefinition(radius=90.0)
         )
         assert status == UPDATE_OK
