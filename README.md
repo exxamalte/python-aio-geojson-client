@@ -1,7 +1,7 @@
 # python-aio-geojson-client
 
-[![Build Status](https://travis-ci.org/exxamalte/python-aio-geojson-client.svg)](https://travis-ci.org/exxamalte/python-aio-geojson-client)
-[![Coverage Status](https://coveralls.io/repos/github/exxamalte/python-aio-geojson-client/badge.svg?branch=master)](https://coveralls.io/github/exxamalte/python-aio-geojson-client?branch=master)
+[![Build Status](https://github.com/exxamalte/python-aio-geojson-client/workflows/CI/badge.svg?branch=master)](https://github.com/exxamalte/python-aio-geojson-client/actions?workflow=CI)
+[![codecov](https://codecov.io/gh/exxamalte/python-aio-geojson-client/branch/master/graph/badge.svg?token=FHM8U3HT33)](https://codecov.io/gh/exxamalte/python-aio-geojson-client)
 [![PyPi](https://img.shields.io/pypi/v/aio-geojson-client.svg)](https://pypi.python.org/pypi/aio-geojson-client)
 [![Version](https://img.shields.io/pypi/pyversions/aio-geojson-client.svg)](https://pypi.python.org/pypi/aio-geojson-client)
 [![Maintainability](https://api.codeclimate.com/v1/badges/4f7b12fe27fc845b5712/maintainability)](https://codeclimate.com/github/exxamalte/python-aio-geojson-client/maintainability)
