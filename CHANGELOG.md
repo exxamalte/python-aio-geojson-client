@@ -1,5 +1,10 @@
 # Changes
 
+## 0.15 (15/06/2021)
+* Set aiohttp to a release 3.7.4 or later (thanks @fabaff).
+* Add license tag (thanks @fabaff).
+* Migrated to github actions.
+
 ## 0.14 (25/04/2021)
 * Allow overriding filters on update (with backwards compatibility).
 * Exclude tests subpackages from distribution (thanks @scop).
