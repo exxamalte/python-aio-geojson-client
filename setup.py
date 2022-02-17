@@ -1,6 +1,6 @@
 import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 NAME = "aio_geojson_client"
 AUTHOR = "Malte Franken"
@@ -9,9 +9,9 @@ DESCRIPTION = "An async GeoJSON client library."
 URL = "https://github.com/exxamalte/python-aio-geojson-client"
 
 REQUIRES = [
-    'aiohttp>=3.7.4,<4',
-    'geojson>=2.4.0',
-    'haversine>=1.0.1',
+    "aiohttp>=3.7.4,<4",
+    "geojson>=2.4.0",
+    "haversine>=1.0.1",
 ]
 
 
@@ -35,12 +35,11 @@ setup(
     url=URL,
     packages=find_packages(exclude=("tests", "tests.*")),
     classifiers=[
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
     ],
-    install_requires=REQUIRES
+    install_requires=REQUIRES,
 )
