@@ -222,3 +222,64 @@ async def test_update_with_timeout_error(event_loop):
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
         assert feed.last_timestamp is None
+
+
+@pytest.mark.asyncio
+async def test_update_ok_feed_feature(aresponses, event_loop):
+    """Test updating feed is ok."""
+    home_coordinates = (-31.0, 151.0)
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture("generic_feed_4.json"), status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 1
+
+        feed_entry = entries[0]
+        assert feed_entry is not None
+        assert feed_entry.title == "Title 1"
+        assert feed_entry.external_id == "3456"
+        assert feed_entry.coordinates == (-37.2345, 149.1234)
+        assert round(abs(feed_entry.distance_to_home - 714.4), 1) == 0
+        assert repr(feed_entry) == "<MockFeedEntry(id=3456)>"
+
+
+@pytest.mark.asyncio
+async def test_unsupported_object(aresponses, event_loop, caplog):
+    """Test updating feed is ok."""
+    home_coordinates = (-31.0, 151.0)
+    aresponses.add(
+        "test.url",
+        "/testpath",
+        "get",
+        aresponses.Response(text=load_fixture("generic_feed_5.json"), status=200),
+    )
+
+    async with aiohttp.ClientSession(loop=event_loop) as websession:
+
+        feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
+        assert (
+            repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
+            "url=http://test.url/testpath, radius=None)>"
+        )
+        status, entries = await feed.update()
+        assert status == UPDATE_OK
+        assert entries is not None
+        assert len(entries) == 0
+
+        assert (
+            "Unsupported GeoJSON object found: <class 'geojson.geometry.Point'>"
+            in caplog.text
+        )

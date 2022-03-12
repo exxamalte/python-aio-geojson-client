@@ -9,7 +9,7 @@ from typing import Callable, Dict, Generic, List, Optional, Tuple
 import aiohttp
 import geojson
 from aiohttp import ClientSession, client_exceptions
-from geojson import FeatureCollection
+from geojson import Feature, FeatureCollection
 
 from .consts import (
     DEFAULT_REQUEST_TIMEOUT,
@@ -70,10 +70,19 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                 entries = []
                 global_data = self._extract_from_feed(data)
                 # Extract data from feed entries.
-                for feature in data.features:
+                if type(data) is Feature:
                     entries.append(
-                        self._new_entry(self._home_coordinates, feature, global_data)
+                        self._new_entry(self._home_coordinates, data, global_data)
                     )
+                elif type(data) is FeatureCollection:
+                    for feature in data.features:
+                        entries.append(
+                            self._new_entry(
+                                self._home_coordinates, feature, global_data
+                            )
+                        )
+                else:
+                    _LOGGER.warning(f"Unsupported GeoJSON object found: {type(data)}")
                 filtered_entries = filter_function(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
                 return UPDATE_OK, filtered_entries
