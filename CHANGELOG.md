@@ -1,5 +1,9 @@
 # Changes
 
+## 0.17 (13/03/2022)
+* Added support for single feature feeds (previously only feature collections were supported).
+* Better handling of unsupported feeds.
+
 ## 0.16 (17/02/2022)
 * No functional changes.
 * Added Python 3.10 support.
