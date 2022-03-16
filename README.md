@@ -16,11 +16,11 @@ This library provides convenient async access to
 
 | Library  | Source  | Topic  |
 |----------|---------|--------|
-| [aio_geojson_generic_client](https://github.com/exxamalte/python-aio-geojson-generic-client)       | Generic GeoJSON feeds      | Any         |
-| [aio_geojson_geonetnz_quakes](https://github.com/exxamalte/python-aio-geojson-geonetnz-quakes)     | GeoNet New Zealand Quakes  | Earthquakes |
-| [aio_geojson_geonetnz_volcano](https://github.com/exxamalte/python-aio-geojson-geonetnz-volcano)   | GeoNet New Zealand Volcano | Volcanoes   |
-| [aio_geojson_nsw_rfs_incidents](https://github.com/exxamalte/python-aio-geojson-nsw-rfs-incidents) | NSW Rural Fire Service     | Fires       |
-
+| [aio_geojson_generic_client](https://github.com/exxamalte/python-aio-geojson-generic-client)       | Generic GeoJSON feeds                             | Any         |
+| [aio_geojson_geonetnz_quakes](https://github.com/exxamalte/python-aio-geojson-geonetnz-quakes)     | GeoNet New Zealand Quakes                         | Earthquakes |
+| [aio_geojson_geonetnz_volcano](https://github.com/exxamalte/python-aio-geojson-geonetnz-volcano)   | GeoNet New Zealand Volcano                        | Volcanoes   |
+| [aio_geojson_nsw_rfs_incidents](https://github.com/exxamalte/python-aio-geojson-nsw-rfs-incidents) | NSW Rural Fire Service                            | Fires       |
+| [aio_geojson_usgs_earthquakes](https://github.com/exxamalte/python-aio-geojson-usgs-earthquakes)   | U.S. Geological Survey Earthquake Hazards Program | Earthquakes |
 
 ## Usage
 Each implementation extracts relevant information from the GeoJSON feed. Not 
