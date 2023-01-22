@@ -1,5 +1,9 @@
 # Changes
 
+## 0.18 (23/01/2023)
+* Added Python 3.11 support (thanks @fabaff).
+* Removed deprecated asynctest dependency (thanks @fabaff).
+
 ## 0.17 (13/03/2022)
 * Added support for single feature feeds (previously only feature collections were supported).
 * Better handling of unsupported feeds.
