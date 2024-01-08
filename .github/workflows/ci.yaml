@@ -29,7 +29,7 @@ jobs:
           python -m site
           python -m pip install --upgrade pip setuptools wheel
           python -m pip install -r requirements.txt
-          python -m pip install -r requirements.test.txt
+          python -m pip install -r requirements-test.txt
       - name: "Run tests for ${{ matrix.python-version }}"
         run: |
           pip install pytest-cov
