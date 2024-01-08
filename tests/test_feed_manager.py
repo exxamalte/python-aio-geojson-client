@@ -1,7 +1,9 @@
 """Test for the generic geojson feed manager."""
+import asyncio
+
 import aiohttp
-import pytest
 import mock as async_mock
+import pytest
 
 from aio_geojson_client.consts import UPDATE_OK_NO_DATA
 from aio_geojson_client.feed_manager import FeedManagerBase
@@ -11,7 +13,7 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_feed_manager(aresponses, event_loop):
+async def test_feed_manager(aresponses):
     """Test the feed manager."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
@@ -21,8 +23,7 @@ async def test_feed_manager(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
 
         # This will just record calls and keep track of external ids.
@@ -121,7 +122,8 @@ async def test_feed_manager(aresponses, event_loop):
         removed_entity_external_ids.clear()
 
         with async_mock.patch(
-            "aio_geojson_client.feed.GeoJsonFeed._fetch", new_callable=async_mock.AsyncMock
+            "aio_geojson_client.feed.GeoJsonFeed._fetch",
+            new_callable=async_mock.AsyncMock,
         ) as mock_fetch:
             mock_fetch.return_value = (UPDATE_OK_NO_DATA, None)
 
@@ -175,7 +177,7 @@ async def test_feed_manager(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_feed_manager_with_status_callback(aresponses, event_loop):
+async def test_feed_manager_with_status_callback(aresponses):
     """Test the feed manager."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
@@ -185,8 +187,7 @@ async def test_feed_manager_with_status_callback(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
 
         # This will just record calls and keep track of external ids.

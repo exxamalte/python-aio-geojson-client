@@ -15,7 +15,7 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_update_ok(aresponses, event_loop):
+async def test_update_ok(aresponses):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
@@ -25,8 +25,7 @@ async def test_update_ok(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
@@ -67,7 +66,7 @@ async def test_update_ok(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_filtering(aresponses, event_loop):
+async def test_update_ok_with_filtering(aresponses):
     """Test updating feed is ok."""
     home_coordinates = (-37.0, 150.0)
     aresponses.add(
@@ -77,7 +76,7 @@ async def test_update_ok_with_filtering(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(
             websession, home_coordinates, "http://test.url/testpath", filter_radius=90.0
         )
@@ -91,7 +90,7 @@ async def test_update_ok_with_filtering(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_filter_override(aresponses, event_loop):
+async def test_update_ok_with_filter_override(aresponses):
     """Test updating feed is ok."""
     home_coordinates = (-37.0, 150.0)
     aresponses.add(
@@ -101,7 +100,7 @@ async def test_update_ok_with_filter_override(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(
             websession, home_coordinates, "http://test.url/testpath", filter_radius=60.0
         )
@@ -117,7 +116,7 @@ async def test_update_ok_with_filter_override(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_geometries(aresponses, event_loop):
+async def test_update_geometries(aresponses):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
@@ -127,8 +126,7 @@ async def test_update_geometries(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_3.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
@@ -165,11 +163,11 @@ async def test_update_geometries(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_client_exception(event_loop):
+async def test_update_with_client_exception():
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
 
-    async with aiohttp.ClientSession(loop=event_loop):
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()):
         mock_websession = MagicMock()
         mock_websession.request.side_effect = ClientOSError
         feed = MockGeoJsonFeed(
@@ -181,12 +179,12 @@ async def test_update_with_client_exception(event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_request_exception(aresponses, event_loop):
+async def test_update_with_request_exception(aresponses):
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add("test.url", "/badpath", "get", aresponses.Response(status=404))
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/badpath")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -194,14 +192,14 @@ async def test_update_with_request_exception(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_json_decode_error(aresponses, event_loop):
+async def test_update_with_json_decode_error(aresponses):
     """Test updating feed raises exception."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
         "test.url", "/badjson", "get", aresponses.Response(text="NOT JSON", status=200)
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/badjson")
         status, entries = await feed.update()
         assert status == UPDATE_ERROR
@@ -209,11 +207,11 @@ async def test_update_with_json_decode_error(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_with_timeout_error(event_loop):
+async def test_update_with_timeout_error():
     """Test updating feed results in timeout error."""
     home_coordinates = (-31.0, 151.0)
 
-    async with aiohttp.ClientSession(loop=event_loop):
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()):
         mock_websession = MagicMock()
         mock_websession.request.side_effect = asyncio.TimeoutError
         feed = MockGeoJsonFeed(
@@ -225,7 +223,7 @@ async def test_update_with_timeout_error(event_loop):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_feature(aresponses, event_loop):
+async def test_update_ok_feed_feature(aresponses):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
@@ -235,8 +233,7 @@ async def test_update_ok_feed_feature(aresponses, event_loop):
         aresponses.Response(text=load_fixture("generic_feed_4.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
@@ -257,7 +254,7 @@ async def test_update_ok_feed_feature(aresponses, event_loop):
 
 
 @pytest.mark.asyncio
-async def test_unsupported_object(aresponses, event_loop, caplog):
+async def test_unsupported_object(aresponses, caplog):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
     aresponses.add(
@@ -267,8 +264,7 @@ async def test_unsupported_object(aresponses, event_loop, caplog):
         aresponses.Response(text=load_fixture("generic_feed_5.json"), status=200),
     )
 
-    async with aiohttp.ClientSession(loop=event_loop) as websession:
-
+    async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/testpath")
         assert (
             repr(feed) == "<MockGeoJsonFeed(home=(-31.0, 151.0), "
