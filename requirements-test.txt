@@ -1,4 +1,5 @@
 pytest-asyncio
+pytest-timeout
 pytest-cov
 mock
 aresponses
