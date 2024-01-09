@@ -4,3 +4,8 @@ target-version = ['py38', 'py39', 'py310', 'py311']
 [tool.isort]
 profile = "black"
 src_paths = ["aio_geojson_client", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
