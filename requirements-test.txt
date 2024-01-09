@@ -3,4 +3,4 @@ pytest-timeout
 pytest-xdist
 pytest-cov
 mock
-aresponses
+aioresponses

@@ -1,5 +1,6 @@
 """Test for the generic geojson feed manager."""
 import asyncio
+from http import HTTPStatus
 
 import aiohttp
 import mock as async_mock
@@ -13,14 +14,13 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_feed_manager(aresponses):
+async def test_feed_manager(mock_aioresponse):
     """Test the feed manager."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.json"),
     )
 
     async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
@@ -92,11 +92,10 @@ async def test_feed_manager(aresponses):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(text=load_fixture("generic_feed_2.json"), status=200),
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.OK,
+            body=load_fixture("generic_feed_2.json"),
         )
 
         await feed_manager.update()
@@ -140,11 +139,8 @@ async def test_feed_manager(aresponses):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(status=500),
+        mock_aioresponse.get(
+            "http://test.url/testpath", status=HTTPStatus.INTERNAL_SERVER_ERROR
         )
 
         await feed_manager.update()
@@ -160,11 +156,10 @@ async def test_feed_manager(aresponses):
         updated_entity_external_ids.clear()
         removed_entity_external_ids.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
+        mock_aioresponse.get(
+            "http://test.url/testpath",
+            status=HTTPStatus.OK,
+            body=load_fixture("generic_feed_1.json"),
         )
         await feed_manager.update_override(
             filter_overrides=GeoJsonFeedFilterDefinition(radius=750.0)
@@ -177,14 +172,13 @@ async def test_feed_manager(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_feed_manager_with_status_callback(aresponses):
+async def test_feed_manager_with_status_callback(mock_aioresponse):
     """Test the feed manager."""
     home_coordinates = (-31.0, 151.0)
-    aresponses.add(
-        "test.url",
-        "/testpath",
-        "get",
-        aresponses.Response(text=load_fixture("generic_feed_1.json"), status=200),
+    mock_aioresponse.get(
+        "http://test.url/testpath",
+        status=HTTPStatus.OK,
+        body=load_fixture("generic_feed_1.json"),
     )
 
     async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
@@ -252,11 +246,8 @@ async def test_feed_manager_with_status_callback(aresponses):
         removed_entity_external_ids.clear()
         status_update.clear()
 
-        aresponses.add(
-            "test.url",
-            "/testpath",
-            "get",
-            aresponses.Response(status=500),
+        mock_aioresponse.get(
+            "http://test.url/testpath", status=HTTPStatus.INTERNAL_SERVER_ERROR
         )
 
         await feed_manager.update()
