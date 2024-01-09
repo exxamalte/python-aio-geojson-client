@@ -1,5 +1,12 @@
 # Changes
 
+## 0.19 (09/01/2024)
+* Improved JSON parsing error handling, especially when not using Python's built-in JSON parsing library.
+* Added Python 3.12 support.
+* Removed Python 3.7 support.
+* Bumped library versions: black, flake8, isort.
+* Migrated to pytest.
+
 ## 0.18 (23/01/2023)
 * Added Python 3.11 support (thanks @fabaff).
 * Removed deprecated asynctest dependency (thanks @fabaff).
