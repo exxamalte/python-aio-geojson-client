@@ -3,7 +3,6 @@ import asyncio
 import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
-from json import JSONDecodeError
 from typing import Callable, Dict, Generic, List, Optional, Tuple
 
 import aiohttp
@@ -133,9 +132,9 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                         "Fetching data from %s failed with %s", self._url, client_error
                     )
                     return UPDATE_ERROR, None
-                except JSONDecodeError as decode_ex:
+                except ValueError as value_ex:
                     _LOGGER.warning(
-                        "Unable to parse JSON from %s: %s", self._url, decode_ex
+                        "Unable to parse JSON from %s: %s", self._url, value_ex
                     )
                     return UPDATE_ERROR, None
         except client_exceptions.ClientError as client_error:
