@@ -1,4 +1,6 @@
 """Tests for aio-geojson-client library."""
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Optional
 
@@ -11,10 +13,12 @@ ATTR_TITLE = "title"
 
 
 class MockGeoJsonFeed(GeoJsonFeed):
+    """Mock geojson feed."""
+
     def _extract_from_feed(self, feed) -> Optional:
         return None
 
-    def _extract_last_timestamp(self, feed_entries) -> Optional[datetime]:
+    def _extract_last_timestamp(self, feed_entries) -> datetime | None:
         return None
 
     def _new_entry(self, home_coordinates, feature, global_data):
@@ -23,12 +27,16 @@ class MockGeoJsonFeed(GeoJsonFeed):
 
 
 class MockSimpleFeedEntry(FeedEntry):
+    """Mock feed entry."""
+
     @property
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
+        """Return title."""
         return "mock title"
 
     @property
-    def external_id(self) -> Optional[str]:
+    def external_id(self) -> str | None:
+        """Return external id."""
         return "mock id"
 
 

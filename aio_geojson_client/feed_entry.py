@@ -1,7 +1,8 @@
 """Feed Entry."""
+from __future__ import annotations
+
 import logging
 from abc import ABC, abstractmethod
-from typing import List, Optional, Tuple
 
 import geojson
 from geojson import Feature
@@ -15,24 +16,24 @@ _LOGGER = logging.getLogger(__name__)
 class FeedEntry(ABC):
     """Feed entry base class."""
 
-    def __init__(self, home_coordinates: Tuple[float, float], feature: Feature):
+    def __init__(self, home_coordinates: tuple[float, float], feature: Feature):
         """Initialise this feed entry."""
         self._home_coordinates = home_coordinates
         self._feature = feature
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return "<{}(id={})>".format(self.__class__.__name__, self.external_id)
+        return f"<{self.__class__.__name__}(id={self.external_id})>"
 
     @property
-    def geometries(self) -> Optional[List[Geometry]]:
+    def geometries(self) -> list[Geometry] | None:
         """Return all geometry details of this entry."""
         if self._feature:
             return FeedEntry._wrap(self._feature.geometry)
         return None
 
     @staticmethod
-    def _wrap(geometry: geojson.geometry.Geometry) -> Optional[List[Geometry]]:
+    def _wrap(geometry: geojson.geometry.Geometry) -> list[Geometry] | None:
         """Wrap data of the provided GeoJSON geometry."""
         if isinstance(geometry, geojson.geometry.Point):
             return [Point(geometry.coordinates[1], geometry.coordinates[0])]
@@ -59,7 +60,7 @@ class FeedEntry(ABC):
             return None
 
     @property
-    def coordinates(self) -> Optional[Tuple[float, float]]:
+    def coordinates(self) -> tuple[float, float] | None:
         """Return the best coordinates (latitude, longitude) of this entry."""
         # This looks for the first point in the list of geometries. If there
         # is no point then return the first entry.
@@ -73,18 +74,18 @@ class FeedEntry(ABC):
 
     @property
     @abstractmethod
-    def title(self) -> Optional[str]:
+    def title(self) -> str | None:
         """Return the title of this entry."""
         return None
 
     @property
     @abstractmethod
-    def external_id(self) -> Optional[str]:
+    def external_id(self) -> str | None:
         """Return the external id of this entry."""
         return None
 
     @property
-    def attribution(self) -> Optional[str]:
+    def attribution(self) -> str | None:
         """Return the attribution of this entry."""
         return None
 

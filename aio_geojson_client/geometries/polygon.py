@@ -1,5 +1,5 @@
 """GeoJSON polygon."""
-from typing import List, Optional, Tuple
+from __future__ import annotations
 
 from .geometry import Geometry
 from .point import Point
@@ -8,13 +8,13 @@ from .point import Point
 class Polygon(Geometry):
     """Represents a polygon."""
 
-    def __init__(self, points: List[Point]):
+    def __init__(self, points: list[Point]):
         """Initialise polygon."""
         self._points = points
 
     def __repr__(self):
         """Return string representation of this polygon."""
-        return "<{}(centroid={})>".format(self.__class__.__name__, self.centroid)
+        return f"<{self.__class__.__name__}(centroid={self.centroid})>"
 
     def __hash__(self) -> int:
         """Return unique hash of this polygon."""
@@ -25,12 +25,12 @@ class Polygon(Geometry):
         return self.__class__ == other.__class__ and self.points == other.points
 
     @property
-    def points(self) -> Optional[List]:
+    def points(self) -> list | None:
         """Return the points of this polygon."""
         return self._points
 
     @property
-    def edges(self) -> List[Tuple[Point, Point]]:
+    def edges(self) -> list[tuple[Point, Point]]:
         """Return all edges of this polygon."""
         edges = []
         for i in range(1, len(self.points)):
@@ -60,7 +60,7 @@ class Polygon(Geometry):
         return False
 
     @staticmethod
-    def _ray_crosses_segment(point: Point, edge: Tuple[Point, Point]):
+    def _ray_crosses_segment(point: Point, edge: tuple[Point, Point]):
         """Use ray-casting algorithm to check provided point and edge."""
         a, b = edge
         px = point.longitude

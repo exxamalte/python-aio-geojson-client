@@ -1,7 +1,9 @@
 """Base class for the feed manager. This allows managing feeds and their entries throughout their life-cycle."""
+from __future__ import annotations
+
 import logging
+from collections.abc import Awaitable, Callable
 from datetime import datetime
-from typing import Awaitable, Callable, List, Optional, Set
 
 from .consts import T_FEED_ENTRY, T_FILTER_DEFINITION, UPDATE_OK, UPDATE_OK_NO_DATA
 from .feed import GeoJsonFeed
@@ -35,10 +37,10 @@ class FeedManagerBase:
 
     def __repr__(self):
         """Return string representation of this feed."""
-        return "<{}(feed={})>".format(self.__class__.__name__, self._feed)
+        return f"<{self.__class__.__name__}(feed={self._feed})>"
 
     async def _update_internal(
-        self, status: str, feed_entries: Optional[List[T_FEED_ENTRY]]
+        self, status: str, feed_entries: list[T_FEED_ENTRY] | None
     ):
         """Update the feed and then update connected entities."""
         # Record current time of update.
@@ -52,7 +54,7 @@ class FeedManagerBase:
             # Record current time of update.
             self._last_update_successful = self._last_update
             # For entity management the external ids from the feed are used.
-            feed_external_ids = set([entry.external_id for entry in feed_entries])
+            feed_external_ids = {entry.external_id for entry in feed_entries}
             count_removed = await self._update_feed_remove_entries(feed_external_ids)
             count_updated = await self._update_feed_update_entries(feed_external_ids)
             count_created = await self._update_feed_create_entries(feed_external_ids)
@@ -82,7 +84,7 @@ class FeedManagerBase:
         await self._update_internal(status, feed_entries)
 
     async def _store_feed_entries(
-        self, status: str, feed_entries: Optional[List[FeedEntry]]
+        self, status: str, feed_entries: list[FeedEntry] | None
     ):
         """Keep a copy of all feed entries for future lookups."""
         if feed_entries or status == UPDATE_OK_NO_DATA:
@@ -91,41 +93,41 @@ class FeedManagerBase:
         else:
             self.feed_entries.clear()
 
-    async def _update_feed_create_entries(self, feed_external_ids: Set[str]) -> int:
+    async def _update_feed_create_entries(self, feed_external_ids: set[str]) -> int:
         """Create entities after feed update."""
         create_external_ids = feed_external_ids.difference(self._managed_external_ids)
         count_created = len(create_external_ids)
         await self._generate_new_entities(create_external_ids)
         return count_created
 
-    async def _update_feed_update_entries(self, feed_external_ids: Set[str]) -> int:
+    async def _update_feed_update_entries(self, feed_external_ids: set[str]) -> int:
         """Update entities after feed update."""
         update_external_ids = self._managed_external_ids.intersection(feed_external_ids)
         count_updated = len(update_external_ids)
         await self._update_entities(update_external_ids)
         return count_updated
 
-    async def _update_feed_remove_entries(self, feed_external_ids: Set[str]) -> int:
+    async def _update_feed_remove_entries(self, feed_external_ids: set[str]) -> int:
         """Remove entities after feed update."""
         remove_external_ids = self._managed_external_ids.difference(feed_external_ids)
         count_removed = len(remove_external_ids)
         await self._remove_entities(remove_external_ids)
         return count_removed
 
-    async def _generate_new_entities(self, external_ids: Set[str]):
+    async def _generate_new_entities(self, external_ids: set[str]):
         """Generate new entities for events using callback."""
         for external_id in external_ids:
             await self._generate_async_callback(external_id)
             _LOGGER.debug("New entity added %s", external_id)
             self._managed_external_ids.add(external_id)
 
-    async def _update_entities(self, external_ids: Set[str]):
+    async def _update_entities(self, external_ids: set[str]):
         """Update entities using callback."""
         for external_id in external_ids:
             _LOGGER.debug("Existing entity found %s", external_id)
             await self._update_async_callback(external_id)
 
-    async def _remove_entities(self, external_ids: Set[str]):
+    async def _remove_entities(self, external_ids: set[str]):
         """Remove entities using callback."""
         for external_id in external_ids:
             _LOGGER.debug("Entity not current anymore %s", external_id)
@@ -151,16 +153,16 @@ class FeedManagerBase:
             )
 
     @property
-    def last_timestamp(self) -> Optional[datetime]:
+    def last_timestamp(self) -> datetime | None:
         """Return the last timestamp extracted from this feed."""
         return self._feed.last_timestamp
 
     @property
-    def last_update(self) -> Optional[datetime]:
+    def last_update(self) -> datetime | None:
         """Return the last update of this feed."""
         return self._last_update
 
     @property
-    def last_update_successful(self) -> Optional[datetime]:
+    def last_update_successful(self) -> datetime | None:
         """Return the last successful update of this feed."""
         return self._last_update_successful

@@ -1,5 +1,5 @@
 """GeoJSON point."""
-from typing import Optional
+from __future__ import annotations
 
 from .geometry import Geometry
 
@@ -31,11 +31,11 @@ class Point(Geometry):
         )
 
     @property
-    def latitude(self) -> Optional[float]:
+    def latitude(self) -> float | None:
         """Return the latitude of this point."""
         return self._latitude
 
     @property
-    def longitude(self) -> Optional[float]:
+    def longitude(self) -> float | None:
         """Return the longitude of this point."""
         return self._longitude
