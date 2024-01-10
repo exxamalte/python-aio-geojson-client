@@ -1,5 +1,8 @@
 # Changes
 
+## 0.20 (11/01/2024)
+* Code quality improvements.
+
 ## 0.19 (09/01/2024)
 * Improved JSON parsing error handling, especially when not using Python's built-in JSON parsing library.
 * Added Python 3.12 support.
