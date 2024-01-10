@@ -1,6 +1,7 @@
 """GeoJSON distance helper."""
+from __future__ import annotations
+
 import logging
-from typing import Optional, Tuple
 
 from haversine import haversine
 
@@ -13,11 +14,11 @@ class GeoJsonDistanceHelper:
     """Helper to calculate distances between GeoJSON geometries."""
 
     def __init__(self):
-        """Initialize the geo distance helper."""
+        """Initialise the geo distance helper."""
         pass
 
     @staticmethod
-    def extract_coordinates(geometry: Geometry) -> Optional[Tuple[float, float]]:
+    def extract_coordinates(geometry: Geometry) -> tuple[float, float] | None:
         """Extract the best coordinates from the feature for display."""
         latitude = longitude = None
         if isinstance(geometry, Point):
@@ -33,7 +34,7 @@ class GeoJsonDistanceHelper:
 
     @staticmethod
     def distance_to_geometry(
-        coordinates: Tuple[float, float], geometry: Geometry
+        coordinates: tuple[float, float], geometry: Geometry
     ) -> float:
         """Calculate the distance between coordinates and geometry."""
         distance = float("inf")
@@ -46,7 +47,7 @@ class GeoJsonDistanceHelper:
         return distance
 
     @staticmethod
-    def _distance_to_point(coordinates: Tuple[float, float], point: Point) -> float:
+    def _distance_to_point(coordinates: tuple[float, float], point: Point) -> float:
         """Calculate the distance between coordinates and the point."""
         # Swap coordinates to match: (latitude, longitude).
         return GeoJsonDistanceHelper._distance_to_coordinates(
@@ -55,7 +56,7 @@ class GeoJsonDistanceHelper:
 
     @staticmethod
     def _distance_to_polygon(
-        coordinates: Tuple[float, float], polygon: Polygon
+        coordinates: tuple[float, float], polygon: Polygon
     ) -> float:
         """Calculate the distance between coordinates and the polygon."""
         distance = float("inf")
@@ -79,7 +80,7 @@ class GeoJsonDistanceHelper:
 
     @staticmethod
     def _distance_to_coordinates(
-        coordinates1: Tuple[float, float], coordinates2: Tuple[float, float]
+        coordinates1: tuple[float, float], coordinates2: tuple[float, float]
     ) -> float:
         """Calculate the distance between two coordinates tuples.."""
         # Expecting coordinates in format: (latitude, longitude).
@@ -87,7 +88,7 @@ class GeoJsonDistanceHelper:
 
     @staticmethod
     def _distance_to_edge(
-        coordinates: Tuple[float, float], edge: Tuple[Point, Point]
+        coordinates: tuple[float, float], edge: tuple[Point, Point]
     ) -> float:
         """Calculate distance between coordinates and provided edge."""
         perpendicular_point = GeoJsonDistanceHelper._perpendicular_point(
@@ -105,9 +106,7 @@ class GeoJsonDistanceHelper:
         return float("inf")
 
     @staticmethod
-    def _perpendicular_point(
-        edge: Tuple[Point, Point], point: Point
-    ) -> Optional[Point]:
+    def _perpendicular_point(edge: tuple[Point, Point], point: Point) -> Point | None:
         """Find a perpendicular point on the edge to the provided point."""
         a, b = edge
         # Safety check: a and b can't be an edge if they are the same point.

@@ -1,6 +1,7 @@
 """Status Update."""
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional
 
 
 class StatusUpdate:
@@ -9,9 +10,9 @@ class StatusUpdate:
     def __init__(
         self,
         status: str,
-        last_update: Optional[datetime],
-        last_update_successful: Optional[datetime],
-        last_timestamp: Optional[datetime],
+        last_update: datetime | None,
+        last_update_successful: datetime | None,
+        last_timestamp: datetime | None,
         total: int,
         created: int,
         updated: int,
@@ -29,9 +30,7 @@ class StatusUpdate:
 
     def __repr__(self):
         """Return string representation of this entry."""
-        return "<{}({}@{})>".format(
-            self.__class__.__name__, self.status, self.last_update
-        )
+        return f"<{self.__class__.__name__}({self.status}@{self.last_update})>"
 
     @property
     def status(self) -> str:
@@ -39,17 +38,17 @@ class StatusUpdate:
         return self._status
 
     @property
-    def last_update(self) -> Optional[datetime]:
+    def last_update(self) -> datetime | None:
         """Return the time when the feed was last updated."""
         return self._last_update
 
     @property
-    def last_update_successful(self) -> Optional[datetime]:
+    def last_update_successful(self) -> datetime | None:
         """Return the time when the feed was last updated successfully."""
         return self._last_update_successful
 
     @property
-    def last_timestamp(self) -> Optional[datetime]:
+    def last_timestamp(self) -> datetime | None:
         """Return the timestamp the latest entry in the feed."""
         return self._last_timestamp
 

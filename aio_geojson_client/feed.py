@@ -1,9 +1,12 @@
 """GeoJSON Feed."""
+from __future__ import annotations
+
 import asyncio
 import logging
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, Dict, Generic, List, Optional, Tuple
+from typing import Generic
 
 import aiohttp
 import geojson
@@ -28,7 +31,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
     def __init__(
         self,
         websession: ClientSession,
-        home_coordinates: Tuple[float, float],
+        home_coordinates: tuple[float, float],
         url: str,
         filter_radius: float = None,
     ):
@@ -50,7 +53,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
 
     @abstractmethod
     def _new_entry(
-        self, home_coordinates: Tuple[float, float], feature, global_data: Dict
+        self, home_coordinates: tuple[float, float], feature, global_data: dict
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
         pass
@@ -60,8 +63,8 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         return DEFAULT_REQUEST_TIMEOUT
 
     async def _update_internal(
-        self, filter_function: Callable[[List[T_FEED_ENTRY]], List[T_FEED_ENTRY]]
-    ) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+        self, filter_function: Callable[[list[T_FEED_ENTRY]], list[T_FEED_ENTRY]]
+    ) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         status, data = await self._fetch()
         if status == UPDATE_OK:
@@ -96,7 +99,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
             self._last_timestamp = None
             return UPDATE_ERROR, None
 
-    async def update(self) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
+    async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
         return await self._update_internal(
             lambda entries: self._filter_entries(entries)
@@ -104,9 +107,8 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
 
     async def update_override(
         self, filter_overrides: T_FILTER_DEFINITION = None
-    ) -> Tuple[str, Optional[List[T_FEED_ENTRY]]]:
-        """Update from external source and return filtered entries with ability to
-        override filter conditions."""
+    ) -> tuple[str, list[T_FEED_ENTRY] | None]:
+        """Update from external source and return filtered entries with ability to override filter conditions."""
         return await self._update_internal(
             lambda entries: self._filter_entries_override(
                 entries, filter_overrides=filter_overrides
@@ -115,7 +117,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
 
     async def _fetch(
         self, method: str = "GET", headers=None, params=None
-    ) -> Tuple[str, Optional[FeatureCollection]]:
+    ) -> tuple[str, FeatureCollection | None]:
         """Fetch GeoJSON data from external source."""
         try:
             timeout = aiohttp.ClientTimeout(total=self._client_session_timeout())
@@ -150,13 +152,13 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
             )
             return UPDATE_ERROR, None
 
-    def _filter_entries(self, entries: List[T_FEED_ENTRY]) -> List[T_FEED_ENTRY]:
+    def _filter_entries(self, entries: list[T_FEED_ENTRY]) -> list[T_FEED_ENTRY]:
         """Filter the provided entries (for backwards-compatibility)."""
         return self._filter_entries_override(entries, None)
 
     def _filter_entries_override(
-        self, entries: List[T_FEED_ENTRY], filter_overrides: T_FILTER_DEFINITION = None
-    ) -> List[T_FEED_ENTRY]:
+        self, entries: list[T_FEED_ENTRY], filter_overrides: T_FILTER_DEFINITION = None
+    ) -> list[T_FEED_ENTRY]:
         """Filter the provided entries with ability to override filter definitions."""
         filtered_entries = entries
         _LOGGER.debug("Entries before filtering %s", filtered_entries)
@@ -185,18 +187,18 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         return filtered_entries
 
     @abstractmethod
-    def _extract_from_feed(self, feed: FeatureCollection) -> Optional[Dict]:
+    def _extract_from_feed(self, feed: FeatureCollection) -> dict | None:
         """Extract global metadata from feed."""
         return None
 
     @abstractmethod
     def _extract_last_timestamp(
-        self, feed_entries: List[T_FEED_ENTRY]
-    ) -> Optional[datetime]:
+        self, feed_entries: list[T_FEED_ENTRY]
+    ) -> datetime | None:
         """Determine latest (newest) entry from the filtered feed."""
         return None
 
     @property
-    def last_timestamp(self) -> Optional[datetime]:
+    def last_timestamp(self) -> datetime | None:
         """Return the last timestamp extracted from this feed."""
         return self._last_timestamp

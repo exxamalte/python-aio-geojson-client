@@ -2,7 +2,10 @@
 
 
 class GeoJsonFeedFilterDefinition:
+    """Filter definition."""
+
     def __init__(self, radius: float = None):
+        """Initialise filter definition."""
         self._radius = radius
 
     @property
