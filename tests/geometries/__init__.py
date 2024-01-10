@@ -1,1 +1,1 @@
-"""Tests for geometries"""
+"""Tests for geometries."""
