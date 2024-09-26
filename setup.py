@@ -13,7 +13,7 @@ URL = "https://github.com/exxamalte/python-aio-geojson-client"
 REQUIRES = [
     "aiohttp>=3.7.4,<4",
     "geojson>=3.1.0",
-    "haversine>=1.0.1",
+    "haversine>=2.8.1",
 ]
 
 
