@@ -1,6 +1,9 @@
 """Tests for base classes."""
+
 import unittest
 from unittest.mock import ANY, MagicMock
+
+import pytest
 
 from aio_geojson_client.geojson_distance_helper import GeoJsonDistanceHelper
 from aio_geojson_client.geometries.point import Point
@@ -29,8 +32,8 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
             ]
         )
         latitude, longitude = GeoJsonDistanceHelper.extract_coordinates(polygon)
-        self.assertAlmostEqual(latitude, -30.2, 1)
-        self.assertAlmostEqual(longitude, 151.2, 1)
+        assert latitude == pytest.approx(-30.2, 0.1)
+        assert longitude == pytest.approx(151.2, 0.1)
 
     def test_extract_coordinates_from_unsupported_geometry(self):
         """Test extracting coordinates from unsupported geometry."""
@@ -38,15 +41,15 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
         latitude, longitude = GeoJsonDistanceHelper.extract_coordinates(
             mock_unsupported_geometry
         )
-        self.assertIsNone(latitude)
-        self.assertIsNone(longitude)
+        assert latitude is None
+        assert longitude is None
 
     def test_distance_to_point(self):
         """Test calculating distance to point."""
         home_coordinates = (-31.0, 150.0)
         point = Point(-30.0, 151.0)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, point)
-        self.assertAlmostEqual(distance, 146.8, 1)
+        assert distance == pytest.approx(146.8, 0.1)
 
     def test_distance_to_polygon_1(self):
         """Test calculating distance to point."""
@@ -61,7 +64,7 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
             ]
         )
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 110.6, 1)
+        assert distance == pytest.approx(110.6, 0.1)
 
     def test_distance_to_polygon_2(self):
         """Test calculating distance to polygon."""
@@ -76,7 +79,7 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
             ]
         )
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 0.0, 1)
+        assert distance == pytest.approx(0.0, 0.1)
 
     def test_distance_to_polygon_3(self):
         """Test calculating distance to polygon."""
@@ -91,7 +94,7 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
             ]
         )
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 111.2, 1)
+        assert distance == pytest.approx(111.2, 0.1)
 
     def test_distance_to_polygon_4(self):
         """Test calculating distance to polygon."""
@@ -106,7 +109,7 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
             ]
         )
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 0.0, 1)
+        assert distance == pytest.approx(0.0, 0.1)
 
     def test_distance_to_polygon_5(self):
         """Test calculating distance to polygon."""
@@ -121,16 +124,16 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
         )
         home_coordinates = (30.2, -177.0)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 240.3, 1)
+        assert distance == pytest.approx(240.3, 0.1)
         home_coordinates = (30.1, 178.0)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 96.2, 1)
+        assert distance == pytest.approx(96.2, 0.1)
         home_coordinates = (31.0, -179.8)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 55.6, 1)
+        assert distance == pytest.approx(55.6, 0.1)
         home_coordinates = (31.0, 179.8)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 55.6, 1)
+        assert distance == pytest.approx(55.6, 0.1)
 
     def test_distance_to_polygon_6(self):
         """Test calculating distance to polygon."""
@@ -145,16 +148,16 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
         )
         home_coordinates = (-29.8, -177.0)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 241.2, 1)
+        assert distance == pytest.approx(241.2, 0.1)
         home_coordinates = (-29.9, 178.0)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 96.4, 1)
+        assert distance == pytest.approx(96.4, 0.1)
         home_coordinates = (-29.0, -179.8)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 55.6, 1)
+        assert distance == pytest.approx(55.6, 0.1)
         home_coordinates = (-29.0, 179.8)
         distance = GeoJsonDistanceHelper.distance_to_geometry(home_coordinates, polygon)
-        self.assertAlmostEqual(distance, 55.6, 1)
+        assert distance == pytest.approx(55.6, 0.1)
 
     def test_distance_to_unsupported_geometry(self):
         """Test calculating distance to unsupported geometry."""
@@ -168,5 +171,5 @@ class TestGeoJsonDistanceHelper(unittest.TestCase):
     def test_perpendicular_point_edge_case(self):
         """Test edge case when calculating perpendicular point."""
         edge = (Point(-31.0, 150.0), Point(-31.0, 150.0))
-        result = GeoJsonDistanceHelper._perpendicular_point(edge, ANY)
+        result = GeoJsonDistanceHelper._perpendicular_point(edge, ANY)  # noqa: SLF001
         assert result is None

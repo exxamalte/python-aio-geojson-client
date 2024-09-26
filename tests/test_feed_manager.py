@@ -1,4 +1,5 @@
 """Test for the generic geojson feed manager."""
+
 import asyncio
 from http import HTTPStatus
 from unittest import mock as async_mock
