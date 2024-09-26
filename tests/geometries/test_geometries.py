@@ -1,4 +1,5 @@
 """Test geometries."""
+
 import unittest
 
 from aio_geojson_client.geometries import Point, Polygon

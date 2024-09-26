@@ -1,4 +1,5 @@
 """GeoJSON distance helper."""
+
 from __future__ import annotations
 
 import logging
@@ -15,7 +16,6 @@ class GeoJsonDistanceHelper:
 
     def __init__(self):
         """Initialise the geo distance helper."""
-        pass
 
     @staticmethod
     def extract_coordinates(geometry: Geometry) -> tuple[float, float] | None:

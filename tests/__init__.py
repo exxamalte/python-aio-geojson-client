@@ -1,4 +1,5 @@
 """Tests for aio-geojson-client library."""
+
 from __future__ import annotations
 
 from datetime import datetime

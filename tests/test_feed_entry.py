@@ -1,4 +1,5 @@
 """Test for the generic geojson feed entry."""
+
 from tests import MockSimpleFeedEntry
 
 
