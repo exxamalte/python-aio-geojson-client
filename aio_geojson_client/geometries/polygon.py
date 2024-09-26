@@ -1,4 +1,5 @@
 """GeoJSON polygon."""
+
 from __future__ import annotations
 
 from .geometry import Geometry
@@ -82,7 +83,7 @@ class Polygon(Geometry):
         if bx < 0:
             bx += 360.0
 
-        if py == ay or py == by:
+        if py in (ay, by):
             py += 0.00000001
         if (py > by or py < ay) or (px > max(ax, bx)):
             return False

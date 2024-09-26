@@ -1,4 +1,5 @@
 """GeoJSON point."""
+
 from __future__ import annotations
 
 from .geometry import Geometry
@@ -14,9 +15,7 @@ class Point(Geometry):
 
     def __repr__(self):
         """Return string representation of this point."""
-        return "<{}(latitude={}, longitude={})>".format(
-            self.__class__.__name__, self.latitude, self.longitude
-        )
+        return f"<{self.__class__.__name__}(latitude={self.latitude}, longitude={self.longitude})>"
 
     def __hash__(self) -> int:
         """Return unique hash of this point."""

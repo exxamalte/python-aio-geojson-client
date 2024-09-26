@@ -1,4 +1,5 @@
 """Constants."""
+
 from typing import TypeVar
 
 from .feed_entry import FeedEntry

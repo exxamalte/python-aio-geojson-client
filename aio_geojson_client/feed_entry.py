@@ -1,8 +1,9 @@
 """Feed Entry."""
+
 from __future__ import annotations
 
-import logging
 from abc import ABC, abstractmethod
+import logging
 
 import geojson
 from geojson import Feature
@@ -37,14 +38,14 @@ class FeedEntry(ABC):
         """Wrap data of the provided GeoJSON geometry."""
         if isinstance(geometry, geojson.geometry.Point):
             return [Point(geometry.coordinates[1], geometry.coordinates[0])]
-        elif isinstance(geometry, geojson.geometry.GeometryCollection):
+        if isinstance(geometry, geojson.geometry.GeometryCollection):
             result = []
             for entry in geometry.geometries:
                 wrapped_geometry = FeedEntry._wrap(entry)
                 if wrapped_geometry:
                     result += wrapped_geometry
             return result
-        elif isinstance(geometry, geojson.geometry.Polygon):
+        if isinstance(geometry, geojson.geometry.Polygon):
             # Currently only support polygons without a hole
             # (https://tools.ietf.org/html/rfc7946#page-23).
             return [
@@ -55,9 +56,8 @@ class FeedEntry(ABC):
                     ]
                 )
             ]
-        else:
-            _LOGGER.debug("Not implemented: %s", type(geometry))
-            return None
+        _LOGGER.debug("Not implemented: %s", type(geometry))
+        return None
 
     @property
     def coordinates(self) -> tuple[float, float] | None:

@@ -1,10 +1,12 @@
 """Filter definitions."""
 
+from __future__ import annotations
+
 
 class GeoJsonFeedFilterDefinition:
     """Filter definition."""
 
-    def __init__(self, radius: float = None):
+    def __init__(self, radius: float | None = None):
         """Initialise filter definition."""
         self._radius = radius
 

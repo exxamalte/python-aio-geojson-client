@@ -1,16 +1,17 @@
 """GeoJSON Feed."""
+
 from __future__ import annotations
 
-import asyncio
-import logging
 from abc import ABC, abstractmethod
+import asyncio
 from collections.abc import Callable
 from datetime import datetime
+import logging
 from typing import Generic
 
 import aiohttp
-import geojson
 from aiohttp import ClientSession, client_exceptions
+import geojson
 from geojson import Feature, FeatureCollection
 
 from .consts import (
@@ -33,7 +34,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         websession: ClientSession,
         home_coordinates: tuple[float, float],
         url: str,
-        filter_radius: float = None,
+        filter_radius: float | None = None,
     ):
         """Initialise this service."""
         self._websession = websession
@@ -44,19 +45,13 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
 
     def __repr__(self):
         """Return string representation of this feed."""
-        return "<{}(home={}, url={}, radius={})>".format(
-            self.__class__.__name__,
-            self._home_coordinates,
-            self._url,
-            self._filter_radius,
-        )
+        return f"<{self.__class__.__name__}(home={self._home_coordinates}, url={self._url}, radius={self._filter_radius})>"
 
     @abstractmethod
     def _new_entry(
         self, home_coordinates: tuple[float, float], feature, global_data: dict
     ) -> T_FEED_ENTRY:
         """Generate a new entry."""
-        pass
 
     def _client_session_timeout(self) -> int:
         """Define client session timeout in seconds. Override if necessary."""
@@ -69,7 +64,7 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
         status, data = await self._fetch()
         if status == UPDATE_OK:
             if data:
-                entries = []
+                entries: list = []
                 global_data = self._extract_from_feed(data)
                 # Extract data from feed entries.
                 if type(data) is Feature:
@@ -77,27 +72,23 @@ class GeoJsonFeed(Generic[T_FEED_ENTRY], ABC):
                         self._new_entry(self._home_coordinates, data, global_data)
                     )
                 elif type(data) is FeatureCollection:
-                    for feature in data.features:
-                        entries.append(
-                            self._new_entry(
-                                self._home_coordinates, feature, global_data
-                            )
-                        )
+                    entries = [
+                        self._new_entry(self._home_coordinates, feature, global_data)
+                        for feature in data.features
+                    ]
                 else:
-                    _LOGGER.warning(f"Unsupported GeoJSON object found: {type(data)}")
+                    _LOGGER.warning("Unsupported GeoJSON object found: %s", type(data))
                 filtered_entries = filter_function(entries)
                 self._last_timestamp = self._extract_last_timestamp(filtered_entries)
                 return UPDATE_OK, filtered_entries
-            else:
-                # Should not happen.
-                return UPDATE_OK, None
-        elif status == UPDATE_OK_NO_DATA:
+            # Should not happen.
+            return UPDATE_OK, None
+        if status == UPDATE_OK_NO_DATA:
             # Happens for example if the server returns 304
             return UPDATE_OK_NO_DATA, None
-        else:
-            # Error happened while fetching the feed.
-            self._last_timestamp = None
-            return UPDATE_ERROR, None
+        # Error happened while fetching the feed.
+        self._last_timestamp = None
+        return UPDATE_ERROR, None
 
     async def update(self) -> tuple[str, list[T_FEED_ENTRY] | None]:
         """Update from external source and return filtered entries."""
