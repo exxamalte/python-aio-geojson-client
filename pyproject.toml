@@ -1,3 +1,52 @@
+[build-system]
+requires = [
+    "setuptools",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aio_geojson_client"
+version  = "0.20"
+requires-python = ">= 3.9"
+authors = [
+  {name = "Malte Franken", email = "coding@subspace.de"},
+]
+description = "An async GeoJSON client library."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["homeassistant", "geojson"]
+classifiers = [
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Development Status :: 5 - Production/Stable",
+]
+dependencies = [
+    "aiohttp>=3.7.4,<4",
+    "geojson>=3.1.0",
+    "haversine>=2.8.1"
+]
+
+[project.optional-dependencies]
+tests = [
+    "pytest-asyncio",
+    "pytest-timeout",
+    "pytest-xdist",
+    "pytest-cov",
+    "coverage",
+    "mock",
+    "aioresponses",
+]
+
+[project.urls]
+Repository = "https://github.com/exxamalte/python-aio-geojson-client"
+Issues = "https://github.com/exxamalte/python-aio-geojson-client/issues"
+Changelog = "https://github.com/exxamalte/python-aio-geojson-client/blob/main/CHANGELOG.md"
+
 [tool.ruff.lint]
 select = [
     "A001", # Variable {name} is shadowing a Python builtin
