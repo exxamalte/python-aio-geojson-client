@@ -1,5 +1,11 @@
 # Changes
 
+## 0.21 (06/10/2024)
+* Bump geojson to 3.1.0
+* Bump haversine to 2.8.1
+* Removed Python 3.8 support.
+* Code quality improvements.
+
 ## 0.20 (11/01/2024)
 * Code quality improvements.
 
