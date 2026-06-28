@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aio_geojson_client"
 version  = "0.21"
-requires-python = ">= 3.9"
+requires-python = ">= 3.11"
 authors = [
   {name = "Malte Franken", email = "coding@subspace.de"},
 ]
@@ -19,6 +19,7 @@ keywords = ["homeassistant", "geojson"]
 classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
   "Development Status :: 5 - Production/Stable",
