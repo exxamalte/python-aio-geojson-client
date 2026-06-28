@@ -17,10 +17,10 @@ from tests.utils import load_fixture
 
 
 @pytest.mark.asyncio
-async def test_update_ok(mock_aioresponse):
+async def test_update_ok(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.json"),
@@ -67,10 +67,10 @@ async def test_update_ok(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_filtering(mock_aioresponse):
+async def test_update_ok_with_filtering(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-37.0, 150.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.json"),
@@ -90,10 +90,10 @@ async def test_update_ok_with_filtering(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_ok_with_filter_override(mock_aioresponse):
+async def test_update_ok_with_filter_override(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-37.0, 150.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_1.json"),
@@ -115,10 +115,10 @@ async def test_update_ok_with_filter_override(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_geometries(mock_aioresponse):
+async def test_update_geometries(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_3.json"),
@@ -177,10 +177,10 @@ async def test_update_with_client_exception():
 
 
 @pytest.mark.asyncio
-async def test_update_with_request_exception(mock_aioresponse):
+async def test_update_with_request_exception(mock_aiointercept):
     """Test updating feed results in error."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get("http://test.url/testpath", status=HTTPStatus.NOT_FOUND)
+    mock_aiointercept.get("http://test.url/testpath", status=HTTPStatus.NOT_FOUND)
 
     async with aiohttp.ClientSession(loop=asyncio.get_running_loop()) as websession:
         feed = MockGeoJsonFeed(websession, home_coordinates, "http://test.url/badpath")
@@ -190,10 +190,10 @@ async def test_update_with_request_exception(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_update_with_json_decode_error(mock_aioresponse):
+async def test_update_with_json_decode_error(mock_aiointercept):
     """Test updating feed raises exception."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/badjson", status=HTTPStatus.OK, body="NOT JSON"
     )
 
@@ -221,10 +221,10 @@ async def test_update_with_timeout_error():
 
 
 @pytest.mark.asyncio
-async def test_update_ok_feed_feature(mock_aioresponse):
+async def test_update_ok_feed_feature(mock_aiointercept):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_4.json"),
@@ -251,10 +251,10 @@ async def test_update_ok_feed_feature(mock_aioresponse):
 
 
 @pytest.mark.asyncio
-async def test_unsupported_object(mock_aioresponse, caplog):
+async def test_unsupported_object(mock_aiointercept, caplog):
     """Test updating feed is ok."""
     home_coordinates = (-31.0, 151.0)
-    mock_aioresponse.get(
+    mock_aiointercept.get(
         "http://test.url/testpath",
         status=HTTPStatus.OK,
         body=load_fixture("generic_feed_5.json"),
