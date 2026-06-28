@@ -1,5 +1,16 @@
 # Changes
 
+## 2026.6.0 (28/06/2026)
+* Added Python 3.13 support.
+* Added Python 3.14 support.
+* Removed Python 3.9 support.
+* Removed Python 3.10 support.
+* Bump haversine to 2.9.0
+* Bump geojson to 3.3.0
+* Bump ruff to 0.15.20
+* Code quality improvements.
+* Changing to date-based versioning
+
 ## 0.21 (06/10/2024)
 * Bump geojson to 3.1.0
 * Bump haversine to 2.8.1
